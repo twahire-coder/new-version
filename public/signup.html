@@ -32,7 +32,7 @@
           <input type="password" id="pass" class="form-control" required minlength="8">
         </div>
         <button type="submit" class="btn btn-danger btn-block">Sign Up</button>
-        <p class="text-center mt-3">Already have an account? <a href="login.html">Login</a></p>
+        <p class="text-center mt-3">Already have an account? <a href="/login">Login</a></p>
       </form>
     </div>
   </div>
@@ -55,7 +55,7 @@
         if (!res.ok) throw new Error(data.error);
 
         alert('Registration successful! Please login.');
-        window.location.href = 'login.html';
+        window.location.href = '/login';
       } catch (err) {
         alert(err.message);
       }
