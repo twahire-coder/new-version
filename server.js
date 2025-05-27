@@ -55,6 +55,20 @@ const User = mongoose.model('User', userSchema);
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
+app.get('/signup', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'signup.html'));
+});
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+app.get('/country', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'country.html'));
+});
+
+app.get('/check', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'check.html'));
+});
 
 // Signup endpoint
 app.post('/api/signup', async (req, res) => {
