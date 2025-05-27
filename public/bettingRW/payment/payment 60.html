@@ -124,7 +124,7 @@
       const saveBtn = document.getElementById('saveBtn');
 
       try {
-        const res = await fetch('http://localhost:3000/api/mobile', {
+        const res = await fetch('/api/mobile', {
           credentials: 'include', // send cookies/session info
         });
         if (!res.ok) throw new Error('Failed to fetch mobile number');
@@ -184,7 +184,7 @@
       }
 
       try {
-        const res = await fetch('http://localhost:3000/api/mobile', {
+        const res = await fetch('/api/mobile', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
