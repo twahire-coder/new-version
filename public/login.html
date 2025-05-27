@@ -28,7 +28,7 @@
 
     <p class="mt-6 text-center text-red-900">
       Don't have an account?
-      <a href="signup.html" class="underline hover:text-red-800 font-semibold">Sign up here</a>
+      <a href="/signup" class="underline hover:text-red-800 font-semibold">Sign up here</a>
     </p>
   </div>
 <script>
@@ -58,12 +58,12 @@
       alert(`Welcome back, ${data.username}!`);
 
       if (data.role === 'admin') {
-        window.location.href = 'admin.html';
+        window.location.href = '/admin';
       } else if (data.isActivated) {
-        window.location.href = 'check.html';
+        window.location.href = '/check';
       } else {
         // Immediately redirect to country.html if not activated
-        window.location.href = 'country.html';
+        window.location.href = '/country';
       }
     } catch (err) {
       alert(err.message);
@@ -78,7 +78,7 @@
       });
       const data = await res.json();
       alert(data.message || "Logged out.");
-      window.location.href = 'login.html';
+      window.location.href = '/login';
     } catch (err) {
       alert("Logout failed.");
     }
