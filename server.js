@@ -186,7 +186,7 @@ app.delete('/api/users/:id', async (req, res) => {
 });
 
 // Monthly Report
-app.get('/api/reports/monthly', async (req, res) => {
+app.get('/api/users/report/monthly', async (req, res) => {
   try {
     const now = new Date();
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
