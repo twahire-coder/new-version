@@ -87,7 +87,7 @@
         btn.addEventListener('click', async () => {
           const userId = btn.getAttribute('data-id');
           try {
-            const res = await fetch(`http://localhost:3000/api/users/${userId}/toggle`, { method: 'PATCH' });
+            const res = await fetch(`/api/users/${userId}/toggle`, { method: 'PATCH' });
             if (!res.ok) {
               const errText = await res.text();
               throw new Error(errText || 'Failed to update user');
