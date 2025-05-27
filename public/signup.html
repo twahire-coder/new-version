@@ -1,4 +1,3 @@
-<!-- public/signup.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,12 +11,28 @@
     .container { margin-top: 80px; }
     .form-box { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
     .btn-danger { background-color: #dc3545; }
+    .alert-custom {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      max-width: 500px;
+      width: 90%;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="mx-auto col-md-6 form-box">
       <h3 class="text-center text-danger mb-4">Create Account</h3>
+
+      <!-- Custom Alert Box -->
+      <div id="signupAlert" class="alert alert-success alert-custom text-center" role="alert">
+        ✅ Registration successful! Redirecting to login...
+      </div>
+
       <form id="signupForm" novalidate>
         <div class="form-group">
           <label>Username</label>
@@ -40,6 +55,7 @@
   <script>
     document.getElementById('signupForm').addEventListener('submit', async function(e) {
       e.preventDefault();
+
       const username = document.getElementById('user').value;
       const email = document.getElementById('email').value;
       const password = document.getElementById('pass').value;
@@ -54,8 +70,16 @@
         const data = await res.json();
         if (!res.ok) throw new Error(data.error);
 
-        alert('Registration successful! Please login.');
-        window.location.href = '/';
+        // Show custom success alert
+        const alertBox = document.getElementById('signupAlert');
+        alertBox.style.display = 'block';
+
+        // Redirect after 3 seconds
+        setTimeout(() => {
+          alertBox.style.display = 'none';
+          window.location.href = '/';
+        }, 3000);
+        
       } catch (err) {
         alert(err.message);
       }
