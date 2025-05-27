@@ -46,6 +46,10 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
 // Signup endpoint
 app.post('/api/signup', async (req, res) => {
   const { username, email, password } = req.body;
