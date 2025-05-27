@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Panel - Manage Users</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-
 <body class="bg-red-900 min-h-screen text-white">
   <header class="bg-red-800 p-4 shadow-md flex justify-between items-center">
     <h1 class="text-2xl font-bold">Admin Panel - Manage Users</h1>
@@ -24,7 +22,6 @@
       </button>
     </div>
 
-    <!-- 🔍 Search Input -->
     <div class="mb-4">
       <input
         type="text"
@@ -49,7 +46,6 @@
       </tbody>
     </table>
 
-    <!-- 💰 Report Section -->
     <section id="reportSection" class="mt-10 hidden bg-red-800 p-4 rounded">
       <h3 class="text-lg font-bold mb-4">📈 Monthly Report</h3>
       <p id="reportUsers" class="mb-2"></p>
@@ -124,7 +120,6 @@
         usersTableBody.appendChild(tr);
       });
 
-      // Activation toggle
       document.querySelectorAll('.toggleActivation').forEach(btn => {
         btn.addEventListener('click', async () => {
           const userId = btn.getAttribute('data-id');
@@ -138,7 +133,6 @@
         });
       });
 
-      // Delete user
       document.querySelectorAll('.deleteUser').forEach(btn => {
         btn.addEventListener('click', async () => {
           const userId = btn.getAttribute('data-id');
@@ -168,19 +162,22 @@
       window.location.href = '/';
     });
 
-    // 📊 Monthly Report
+    // Report Button
     viewReportBtn.addEventListener('click', async () => {
       try {
         const res = await fetch('/api/users/report/monthly');
         if (!res.ok) throw new Error('Failed to load report');
-        const { totalUsers } = await res.json();
+        const data = await res.json();
+        const totalUsers = parseInt(data.totalUsers) || 0;
         const income = totalUsers * 30000;
         const goal = 500000;
         const percent = Math.min((income / goal) * 100, 100);
+        const remaining = Math.max(goal - income, 0);
 
         reportUsers.textContent = `Total new users this month: ${totalUsers}`;
         reportTotal.textContent = `Estimated monthly income: ${income.toLocaleString()} RWF`;
-        reportGoal.textContent = `Goal: ${goal.toLocaleString()} RWF (${percent.toFixed(1)}%)`;
+        reportGoal.textContent = `Goal: ${goal.toLocaleString()} RWF (${percent.toFixed(1)}%) - ${remaining.toLocaleString()} RWF remaining`;
+
         reportProgress.style.width = `${percent}%`;
         reportProgress.textContent = percent >= 10 ? `${percent.toFixed(0)}%` : '';
 
@@ -194,5 +191,5 @@
     loadUsers();
   </script>
 </body>
-
 </html>
+
