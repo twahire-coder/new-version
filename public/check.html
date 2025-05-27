@@ -9,7 +9,6 @@
 <body class="bg-red-900 text-white min-h-screen p-4">
 
   <div class="flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto min-h-[80vh]">
-
     <!-- Left Panel - Predictor -->
     <div class="bg-white bg-opacity-90 rounded-xl shadow-lg p-6 w-full lg:w-1/2 text-gray-900 flex flex-col justify-between">
       <div>
@@ -31,15 +30,6 @@
           Next Odd & Notify
         </button>
         <div id="countdown" class="text-sm text-gray-700 text-center font-mono tracking-wide"></div>
-
-        <!-- Activate Next User -->
-        <button id="activate-user-btn" class="bg-green-700 text-white py-2 px-4 rounded w-full mb-2 hover:bg-green-800 transition">
-          Activate Next User
-        </button>
-        <div class="user-loading hidden mb-2 text-center">
-          <img src="https://cdn-icons-png.flaticon.com/512/154/154834.png" alt="Loading..." class="w-8 h-8 animate-spin mx-auto" />
-        </div>
-        <div id="active-user-name" class="text-center text-green-300 font-semibold text-lg"></div>
       </div>
     </div>
 
@@ -48,6 +38,12 @@
       <script async src="https://cse.google.com/cse.js?cx=b559dd72dc01d4f47"></script>
       <div class="gcse-search"></div>
     </div>
+  </div>
+
+  <!-- Floating user activation card -->
+  <div id="floating-user-card" class="fixed bottom-6 right-6 bg-green-700 text-white shadow-xl rounded-xl p-4 hidden z-50 transition-all duration-500 ease-in-out">
+    <div class="text-sm font-semibold">Activating user...</div>
+    <div id="active-user-name" class="text-lg font-bold mt-1"></div>
   </div>
 
   <script>
@@ -135,7 +131,7 @@
       alert("Moved to the next odd...");
     });
 
-    // User activation feature
+    // Floating auto activation card logic
     const nameArray = [
       "Alice", "Bob", "Charlie", "Diana", "Ethan", "Fiona", "George", "Hannah", "Ian", "Jack",
       "Karen", "Liam", "Mia", "Noah", "Olivia", "Paul", "Quinn", "Riley", "Sam", "Tina",
@@ -145,27 +141,28 @@
     ];
 
     let currentNameIndex = 0;
-    const activateBtn = document.getElementById("activate-user-btn");
-    const userLoading = document.querySelector(".user-loading");
+    const floatingCard = document.getElementById("floating-user-card");
     const activeUserDisplay = document.getElementById("active-user-name");
 
-    activateBtn.addEventListener("click", () => {
+    function showNextUserCard() {
       if (currentNameIndex >= nameArray.length) {
-        alert("🎉 All users have been activated!");
+        floatingCard.querySelector("div").textContent = "✅ All users activated!";
+        activeUserDisplay.textContent = "";
         return;
       }
 
-      userLoading.classList.remove("hidden");
-      activeUserDisplay.textContent = "";
+      const name = nameArray[currentNameIndex];
+      floatingCard.classList.remove("hidden");
+      activeUserDisplay.textContent = `${name} activated!`;
 
       setTimeout(() => {
-        const name = nameArray[currentNameIndex];
-        userLoading.classList.add("hidden");
-        activeUserDisplay.textContent = `✅ ${name} is now activated!`;
-        alert(`🎉 Welcome! User "${name}" has been successfully activated!`);
-        currentNameIndex++;
-      }, 1200);
-    });
+        floatingCard.classList.add("hidden");
+      }, 3000);
+
+      currentNameIndex++;
+    }
+
+    setInterval(showNextUserCard, 5000);
 
     // Initialize
     askNotificationPermission();
