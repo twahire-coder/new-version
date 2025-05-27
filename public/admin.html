@@ -47,7 +47,7 @@
 
     async function loadUsers() {
       try {
-        const res = await fetch('http://localhost:3000/api/users');
+        const res = await fetch('/api/users');
         if (!res.ok) throw new Error('Could not fetch users');
         const users = await res.json();
         renderUsers(users);
