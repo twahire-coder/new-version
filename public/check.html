@@ -8,9 +8,10 @@
 </head>
 <body class="bg-red-900 text-white min-h-screen p-4">
 
-  <div class="flex flex-row gap-6 max-w-7xl mx-auto min-h-[80vh]">
+  <div class="flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto min-h-[80vh]">
+
     <!-- Left Panel - Predictor -->
-    <div class="bg-white bg-opacity-90 rounded-xl shadow-lg p-6 flex-1 text-gray-900 flex flex-col justify-between">
+    <div class="bg-white bg-opacity-90 rounded-xl shadow-lg p-6 w-full lg:w-1/2 text-gray-900 flex flex-col justify-between">
       <div>
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold">Aviator Predictor</h2>
@@ -21,8 +22,7 @@
 
         <div id="prediction" class="text-4xl font-extrabold text-blue-600 mb-6 text-center">--</div>
         <div class="loading hidden mb-4">
-          <!-- Loading spinner from CDN -->
-          <img src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss-spinner/1.0.0/spinner.svg" alt="Loading..." class="w-12 h-12 animate-spin mx-auto" />
+          <img src="https://cdn-icons-png.flaticon.com/512/154/154834.png" alt="Loading..." class="w-12 h-12 animate-spin mx-auto" />
         </div>
       </div>
 
@@ -30,30 +30,17 @@
         <button id="next-button" class="bg-red-900 text-white py-2 px-4 rounded w-full mb-4">
           Next Odd & Notify
         </button>
-        <div id="countdown" class="text-sm text-gray-700 text-center"></div>
+        <div id="countdown" class="text-sm text-gray-700 text-center font-mono tracking-wide"></div>
       </div>
     </div>
 
     <!-- Right Panel - Google CSE Widget -->
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden flex-1 flex flex-col p-4 text-black">
-      <!-- Music Controls -->
-      <div class="flex justify-end mb-4">
-        <button id="musicToggleBtn" class="bg-red-700 hover:bg-red-800 text-white py-1 px-3 rounded text-sm">
-          🔈 Music On
-        </button>
-      </div>
-
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full lg:w-1/2 flex flex-col p-4 text-black">
       <!-- Google Custom Search Element -->
       <script async src="https://cse.google.com/cse.js?cx=b559dd72dc01d4f47"></script>
-      <div class="gcse-search flex-grow"></div>
+      <div class="gcse-search"></div>
     </div>
   </div>
-
-  <!-- Background music -->
-  <audio id="bgMusic" loop preload="auto" volume="0.2">
-    <source src="https://cdn.pixabay.com/download/audio/2022/03/19/audio_042474c25d.mp3?filename=calm-and-slow-music-ambient-11245.mp3" type="audio/mpeg" />
-    Your browser does not support the audio element.
-  </audio>
 
   <script>
     const predictionElement = document.getElementById("prediction");
@@ -63,31 +50,47 @@
     const logoutBtn = document.getElementById("logout-btn");
     const user = JSON.parse(sessionStorage.getItem("loggedInUser"));
 
-    const bgMusic = document.getElementById("bgMusic");
-    const musicToggleBtn = document.getElementById("musicToggleBtn");
-
     if (!user || !user.email) {
       alert("Access denied. Please login first.");
       location.href = "login.html";
     }
 
-    // Start playing music on page load (some browsers may require user interaction)
-    window.addEventListener('load', () => {
-      bgMusic.play().catch(() => {
-        // Autoplay might be blocked; update button text accordingly
-        musicToggleBtn.textContent = "🔈 Music Off";
-      });
-    });
+    // Setup 6 hours countdown from first visit or stored timestamp
+    const SESSION_DURATION_MS = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
+    let sessionStart = sessionStorage.getItem("sessionStart");
 
-    musicToggleBtn.addEventListener("click", () => {
-      if (bgMusic.paused) {
-        bgMusic.play();
-        musicToggleBtn.textContent = "🔈 Music On";
-      } else {
-        bgMusic.pause();
-        musicToggleBtn.textContent = "🔇 Music Off";
+    if (!sessionStart) {
+      sessionStart = Date.now();
+      sessionStorage.setItem("sessionStart", sessionStart);
+    } else {
+      sessionStart = parseInt(sessionStart, 10);
+    }
+
+    function updateCountdown() {
+      const now = Date.now();
+      const elapsed = now - sessionStart;
+      const remaining = SESSION_DURATION_MS - elapsed;
+
+      if (remaining <= 0) {
+        // Time expired - logout user and redirect to login
+        alert("Your session expired after 6 hours. Please login again.");
+        sessionStorage.removeItem("loggedInUser");
+        sessionStorage.removeItem("sessionStart");
+        location.href = "login.html";
+        return;
       }
-    });
+
+      // Calculate hours, minutes, seconds remaining
+      const hours = Math.floor(remaining / (1000 * 60 * 60));
+      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+      countdownElement.textContent = `Session time remaining: ${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')} : ${seconds.toString().padStart(2, '0')}`;
+    }
+
+    // Call updateCountdown every second
+    setInterval(updateCountdown, 1000);
+    updateCountdown(); // initial call
 
     // Dummy example for prediction generation
     function generatePrediction() {
@@ -118,7 +121,7 @@
 
     function logout() {
       sessionStorage.removeItem("loggedInUser");
-      sessionStorage.removeItem("sessionEnd");
+      sessionStorage.removeItem("sessionStart");
       location.href = "login.html";
     }
 
