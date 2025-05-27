@@ -19,6 +19,16 @@
   <main class="max-w-5xl mx-auto mt-8 p-4 bg-red-700 rounded-lg shadow-lg">
     <h2 class="text-xl font-semibold mb-4">Registered Users</h2>
 
+    <!-- 🔍 Search Input -->
+    <div class="mb-4">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search by email..."
+        class="w-full px-4 py-2 text-red-900 rounded focus:outline-none focus:ring-2 focus:ring-white"
+      />
+    </div>
+
     <table class="w-full table-auto border-collapse border border-red-600">
       <thead>
         <tr class="bg-red-800 text-white">
@@ -44,13 +54,16 @@
 
     const usersTableBody = document.getElementById('usersTableBody');
     const logoutBtn = document.getElementById('logoutBtn');
+    const searchInput = document.getElementById('searchInput');
+
+    let allUsers = [];
 
     async function loadUsers() {
       try {
         const res = await fetch('/api/users');
         if (!res.ok) throw new Error('Could not fetch users');
-        const users = await res.json();
-        renderUsers(users);
+        allUsers = await res.json();
+        renderUsers(allUsers);
       } catch (err) {
         alert(err.message);
       }
@@ -61,7 +74,6 @@
 
       users.forEach(user => {
         const isAdmin = user.role === 'admin';
-
         const tr = document.createElement('tr');
         tr.classList.add('hover:bg-red-500');
 
@@ -100,13 +112,22 @@
       });
     }
 
+    // Filter by email
+    searchInput.addEventListener('input', () => {
+      const search = searchInput.value.toLowerCase();
+      const filteredUsers = allUsers.filter(user =>
+        user.email.toLowerCase().includes(search)
+      );
+      renderUsers(filteredUsers);
+    });
+
     logoutBtn.addEventListener('click', () => {
       sessionStorage.removeItem('loggedInUser');
       alert('Logged out successfully.');
       window.location.href = '/';
     });
 
-    loadUsers(); // Load on page ready
+    loadUsers();
   </script>
 </body>
 
