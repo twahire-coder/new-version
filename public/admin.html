@@ -39,7 +39,7 @@
     const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
     if (!loggedInUser || loggedInUser.role !== 'admin') {
       alert('Access denied. Please log in as admin.');
-      window.location.href = 'login.html';
+      window.location.href = '/login';
     }
 
     const usersTableBody = document.getElementById('usersTableBody');
@@ -103,7 +103,7 @@
     logoutBtn.addEventListener('click', () => {
       sessionStorage.removeItem('loggedInUser');
       alert('Logged out successfully.');
-      window.location.href = 'login.html';
+      window.location.href = '/login';
     });
 
     loadUsers(); // Load on page ready
