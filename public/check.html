@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -31,12 +31,20 @@
           Next Odd & Notify
         </button>
         <div id="countdown" class="text-sm text-gray-700 text-center font-mono tracking-wide"></div>
+
+        <!-- Activate Next User -->
+        <button id="activate-user-btn" class="bg-green-700 text-white py-2 px-4 rounded w-full mb-2 hover:bg-green-800 transition">
+          Activate Next User
+        </button>
+        <div class="user-loading hidden mb-2 text-center">
+          <img src="https://cdn-icons-png.flaticon.com/512/154/154834.png" alt="Loading..." class="w-8 h-8 animate-spin mx-auto" />
+        </div>
+        <div id="active-user-name" class="text-center text-green-300 font-semibold text-lg"></div>
       </div>
     </div>
 
     <!-- Right Panel - Google CSE Widget -->
     <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full lg:w-1/2 flex flex-col p-4 text-black">
-      <!-- Google Custom Search Element -->
       <script async src="https://cse.google.com/cse.js?cx=b559dd72dc01d4f47"></script>
       <div class="gcse-search"></div>
     </div>
@@ -55,8 +63,8 @@
       location.href = "login.html";
     }
 
-    // Setup 6 hours countdown from first visit or stored timestamp
-    const SESSION_DURATION_MS = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
+    // Session countdown setup (6 hours)
+    const SESSION_DURATION_MS = 6 * 60 * 60 * 1000;
     let sessionStart = sessionStorage.getItem("sessionStart");
 
     if (!sessionStart) {
@@ -72,7 +80,6 @@
       const remaining = SESSION_DURATION_MS - elapsed;
 
       if (remaining <= 0) {
-        // Time expired - logout user and redirect to login
         alert("Your session expired after 6 hours. Please login again.");
         sessionStorage.removeItem("loggedInUser");
         sessionStorage.removeItem("sessionStart");
@@ -80,7 +87,6 @@
         return;
       }
 
-      // Calculate hours, minutes, seconds remaining
       const hours = Math.floor(remaining / (1000 * 60 * 60));
       const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
@@ -88,14 +94,11 @@
       countdownElement.textContent = `Session time remaining: ${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')} : ${seconds.toString().padStart(2, '0')}`;
     }
 
-    // Call updateCountdown every second
     setInterval(updateCountdown, 1000);
-    updateCountdown(); // initial call
+    updateCountdown();
 
-    // Dummy example for prediction generation
     function generatePrediction() {
       loadingElement.classList.remove("hidden");
-      // Simulate API call delay
       setTimeout(() => {
         const randomOdd = (Math.random() * 5 + 1).toFixed(2);
         predictionElement.textContent = randomOdd;
@@ -130,6 +133,38 @@
     nextButton.addEventListener("click", () => {
       generatePrediction();
       alert("Moved to the next odd...");
+    });
+
+    // User activation feature
+    const nameArray = [
+      "Alice", "Bob", "Charlie", "Diana", "Ethan", "Fiona", "George", "Hannah", "Ian", "Jack",
+      "Karen", "Liam", "Mia", "Noah", "Olivia", "Paul", "Quinn", "Riley", "Sam", "Tina",
+      "Umar", "Violet", "William", "Xena", "Yusuf", "Zara", "Amir", "Bella", "Carlos", "Daniel",
+      "Eva", "Fatima", "Grace", "Harry", "Isla", "Jayden", "Kylie", "Leo", "Maria", "Nathan",
+      "Omar", "Penelope", "Quincy", "Rose", "Sebastian", "Tom", "Uma", "Victor", "Wendy", "Xavier"
+    ];
+
+    let currentNameIndex = 0;
+    const activateBtn = document.getElementById("activate-user-btn");
+    const userLoading = document.querySelector(".user-loading");
+    const activeUserDisplay = document.getElementById("active-user-name");
+
+    activateBtn.addEventListener("click", () => {
+      if (currentNameIndex >= nameArray.length) {
+        alert("🎉 All users have been activated!");
+        return;
+      }
+
+      userLoading.classList.remove("hidden");
+      activeUserDisplay.textContent = "";
+
+      setTimeout(() => {
+        const name = nameArray[currentNameIndex];
+        userLoading.classList.add("hidden");
+        activeUserDisplay.textContent = `✅ ${name} is now activated!`;
+        alert(`🎉 Welcome! User "${name}" has been successfully activated!`);
+        currentNameIndex++;
+      }, 1200);
     });
 
     // Initialize
