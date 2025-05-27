@@ -3,15 +3,14 @@
 
   if (!sessionUser) {
     alert("You must log in first.");
-    window.location.href = "../index.html";
-  }
-
-  // Optional: Redirect if wrong role
-  if (window.location.pathname.includes("admin") && sessionUser.role !== "admin") {
-    alert("Access denied.");
-    window.location.href = "../index.html";
+    window.location.href = "login.html";
+  } else {
+    // Optional: enforce redirect if somehow activated users shouldn't access country.html
+    // But based on your previous message, we allow both types here.
+    console.log("User is logged in:", sessionUser);
   }
 </script>
+
 
 
 

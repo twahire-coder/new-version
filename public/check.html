@@ -1,30 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Really Aviator Predictor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Really Aviator Predictor with Google CSE Widget</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-red-900 text-white min-h-screen p-4">
 
   <div class="flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto">
-    
+
     <!-- Left Panel - Predictor -->
     <div class="bg-white bg-opacity-90 rounded-xl shadow-lg p-6 w-full lg:w-1/2 text-gray-900 flex flex-col justify-between">
       <div>
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold">Aviator Predictor</h2>
-          <button id="logout-btn" class="text-sm bg-red-700 text-white px-3 py-1 rounded hover:bg-red-800">
-            Logout
-          </button>
+          <button id="logout-btn" class="text-sm bg-red-700 text-white px-3 py-1 rounded hover:bg-red-800">Logout</button>
         </div>
 
         <p class="mb-4">Prediction meets 100%</p>
 
         <div id="prediction" class="text-4xl font-extrabold text-blue-600 mb-6 text-center">--</div>
         <div class="loading hidden mb-4">
-          <img src="loading.gif" alt="Loading..." class="w-12 h-12 animate-spin mx-auto">
+          <img src="loading.gif" alt="Loading..." class="w-12 h-12 animate-spin mx-auto" />
         </div>
       </div>
 
@@ -36,78 +34,37 @@
       </div>
     </div>
 
-    <!-- Right Panel - Google View -->
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full lg:w-1/2 h-[500px]">
-      <iframe src="https://www.google.com" class="w-full h-full border-none"></iframe>
+    <!-- Right Panel - Google CSE Widget -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full lg:w-1/2 flex flex-col p-4 text-black">
+      <!-- Google Custom Search Element -->
+      <script async src="https://cse.google.com/cse.js?cx=b559dd72dc01d4f47"></script>
+      <div class="gcse-search"></div>
     </div>
   </div>
 
   <script>
-    const predictionElement = document.getElementById('prediction');
-    const countdownElement = document.getElementById('countdown');
-    const loadingElement = document.querySelector('.loading');
-    const nextButton = document.getElementById('next-button');
-    const logoutBtn = document.getElementById('logout-btn');
+    const predictionElement = document.getElementById("prediction");
+    const countdownElement = document.getElementById("countdown");
+    const loadingElement = document.querySelector(".loading");
+    const nextButton = document.getElementById("next-button");
+    const logoutBtn = document.getElementById("logout-btn");
+    const user = JSON.parse(sessionStorage.getItem("loggedInUser"));
 
-    const email = localStorage.getItem('loggedInEmail');
-
-    if (!email) {
+    if (!user || !user.email) {
       alert("Access denied. Please login first.");
-      location.href = 'login.html';
+      location.href = "login.html";
     }
 
-    function checkSessionAndStart() {
-      fetch('/api/session-check', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      })
-        .then(res => {
-          if (!res.ok) throw new Error('Session expired');
-          return res.json();
-        })
-        .then(data => {
-          startCountdown(data.remaining);
-          generatePrediction();
-          setInterval(generatePrediction, 15000);
-        })
-        .catch(err => {
-          alert(err.message);
-          logout();
-        });
-    }
-
-    function startCountdown(ms) {
-      const interval = setInterval(() => {
-        const hours = Math.floor(ms / 3600000);
-        const minutes = Math.floor((ms % 3600000) / 60000);
-        const seconds = Math.floor((ms % 60000) / 1000);
-
-        countdownElement.textContent = `Remaining Time: ${hours}h ${minutes}m ${seconds}s`;
-        ms -= 1000;
-
-        if (ms <= 0) {
-          clearInterval(interval);
-          alert("Session expired.");
-          logout();
-        }
-      }, 1000);
-    }
-
+    // Dummy example for prediction generation
     function generatePrediction() {
-      loadingElement.classList.remove('hidden');
-      fetch('http://localhost:3000/api/predict')
-        .then(res => res.json())
-        .then(data => {
-          predictionElement.textContent = data.prediction;
-          loadingElement.classList.add('hidden');
-          showNotification(data.prediction);
-        });
-    }
-
-    function logout() {
-      localStorage.removeItem('loggedInEmail');
-      location.href = 'login.html';
+      loadingElement.classList.remove("hidden");
+      // Simulate API call delay
+      setTimeout(() => {
+        const randomOdd = (Math.random() * 5 + 1).toFixed(2);
+        predictionElement.textContent = randomOdd;
+        loadingElement.classList.add("hidden");
+        showNotification(randomOdd);
+      }, 1000);
     }
 
     function showNotification(prediction) {
@@ -125,14 +82,23 @@
       }
     }
 
-    logoutBtn.addEventListener('click', logout);
-    nextButton.addEventListener('click', () => {
+    function logout() {
+      // Example logout logic
+      sessionStorage.removeItem("loggedInUser");
+      sessionStorage.removeItem("sessionEnd");
+      location.href = "login.html";
+    }
+
+    logoutBtn.addEventListener("click", logout);
+
+    nextButton.addEventListener("click", () => {
       generatePrediction();
       alert("Moved to the next odd...");
     });
 
+    // Initialize
     askNotificationPermission();
-    checkSessionAndStart();
+    generatePrediction();
   </script>
 </body>
 </html>

@@ -25,8 +25,14 @@ app.use(session({
   }
 }));
 
+
+app.use(cors({
+  origin: 'http://localhost:3000', // or whatever your frontend origin is
+  credentials: true
+}));
+
 // Middleware
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -83,7 +89,8 @@ app.post('/api/signup', async (req, res) => {
 
 // Login endpoint
 app.post('/api/login', async (req, res) => {
-  const { email, password } = req.body;
+  const email = req.body.email?.trim().toLowerCase();
+  const password = req.body.password?.trim();
 
   if (!email || !password) {
     return res.status(400).json({ error: 'All fields are required' });
@@ -96,14 +103,13 @@ app.post('/api/login', async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     if (user.password !== password) return res.status(401).json({ error: 'Invalid credentials' });
 
-    if (!user.isActivated) return res.status(403).json({ error: 'Account not activated' });
-
-    // Store session info
+    // **Do NOT block login here if not activated**
+    // Instead, send user info with isActivated flag
     req.session.user = {
       email: user.email,
       username: user.username,
@@ -117,6 +123,7 @@ app.post('/api/login', async (req, res) => {
     res.status(500).json({ error: 'Internal server error during login' });
   }
 });
+
 
 // Session check endpoint
 app.post('/api/session-check', async (req, res) => {
