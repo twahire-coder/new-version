@@ -174,7 +174,42 @@ app.post('/api/session-check', async (req, res) => {
     res.status(500).json({ error: 'Internal server error during session check' });
   }
 });
+// Delete user
+app.delete('/api/users/:id', async (req, res) => {
+  try {
+    const deleted = await User.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).send('User not found');
+    res.send('User deleted');
+  } catch (err) {
+    res.status(500).send('Failed to delete user');
+  }
+});
 
+// Monthly Report
+app.get('/api/reports/monthly', async (req, res) => {
+  try {
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const usersThisMonth = await User.find({
+      createdAt: { $gte: firstDay },
+    });
+
+    const count = usersThisMonth.length;
+    const income = count * 30000;
+    const goal = 500000;
+    const progress = ((income / goal) * 100).toFixed(2);
+
+    res.json({
+      month: now.toLocaleString('default', { month: 'long' }),
+      userCount: count,
+      income,
+      goal,
+      progress,
+    });
+  } catch (err) {
+    res.status(500).send('Failed to generate report');
+  }
+});
 // Logout endpoint
 app.post('/api/logout', (req, res) => {
   req.session.destroy(err => {
