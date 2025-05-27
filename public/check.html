@@ -8,10 +8,9 @@
 </head>
 <body class="bg-red-900 text-white min-h-screen p-4">
 
-  <div class="flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto">
-
+  <div class="flex flex-row gap-6 max-w-7xl mx-auto min-h-[80vh]">
     <!-- Left Panel - Predictor -->
-    <div class="bg-white bg-opacity-90 rounded-xl shadow-lg p-6 w-full lg:w-1/2 text-gray-900 flex flex-col justify-between">
+    <div class="bg-white bg-opacity-90 rounded-xl shadow-lg p-6 flex-1 text-gray-900 flex flex-col justify-between">
       <div>
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold">Aviator Predictor</h2>
@@ -22,7 +21,8 @@
 
         <div id="prediction" class="text-4xl font-extrabold text-blue-600 mb-6 text-center">--</div>
         <div class="loading hidden mb-4">
-          <img src="loading.gif" alt="Loading..." class="w-12 h-12 animate-spin mx-auto" />
+          <!-- Loading spinner from CDN -->
+          <img src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss-spinner/1.0.0/spinner.svg" alt="Loading..." class="w-12 h-12 animate-spin mx-auto" />
         </div>
       </div>
 
@@ -35,12 +35,25 @@
     </div>
 
     <!-- Right Panel - Google CSE Widget -->
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full lg:w-1/2 flex flex-col p-4 text-black">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden flex-1 flex flex-col p-4 text-black">
+      <!-- Music Controls -->
+      <div class="flex justify-end mb-4">
+        <button id="musicToggleBtn" class="bg-red-700 hover:bg-red-800 text-white py-1 px-3 rounded text-sm">
+          🔈 Music On
+        </button>
+      </div>
+
       <!-- Google Custom Search Element -->
       <script async src="https://cse.google.com/cse.js?cx=b559dd72dc01d4f47"></script>
-      <div class="gcse-search"></div>
+      <div class="gcse-search flex-grow"></div>
     </div>
   </div>
+
+  <!-- Background music -->
+  <audio id="bgMusic" loop preload="auto" volume="0.2">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/19/audio_042474c25d.mp3?filename=calm-and-slow-music-ambient-11245.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
 
   <script>
     const predictionElement = document.getElementById("prediction");
@@ -50,10 +63,31 @@
     const logoutBtn = document.getElementById("logout-btn");
     const user = JSON.parse(sessionStorage.getItem("loggedInUser"));
 
+    const bgMusic = document.getElementById("bgMusic");
+    const musicToggleBtn = document.getElementById("musicToggleBtn");
+
     if (!user || !user.email) {
       alert("Access denied. Please login first.");
       location.href = "login.html";
     }
+
+    // Start playing music on page load (some browsers may require user interaction)
+    window.addEventListener('load', () => {
+      bgMusic.play().catch(() => {
+        // Autoplay might be blocked; update button text accordingly
+        musicToggleBtn.textContent = "🔈 Music Off";
+      });
+    });
+
+    musicToggleBtn.addEventListener("click", () => {
+      if (bgMusic.paused) {
+        bgMusic.play();
+        musicToggleBtn.textContent = "🔈 Music On";
+      } else {
+        bgMusic.pause();
+        musicToggleBtn.textContent = "🔇 Music Off";
+      }
+    });
 
     // Dummy example for prediction generation
     function generatePrediction() {
@@ -83,7 +117,6 @@
     }
 
     function logout() {
-      // Example logout logic
       sessionStorage.removeItem("loggedInUser");
       sessionStorage.removeItem("sessionEnd");
       location.href = "login.html";
