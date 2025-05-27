@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Payment</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            position: relative;
+        }
+
+        .payment-card {
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+        }
+
+        .payment-card h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .payment-card .form-group {
+            margin-bottom: 20px;
+        }
+
+        .payment-card .btn-pay {
+            width: 100%;
+            background-color: #007bff;
+            border: none;
+            color: white;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .footer a {
+            color: #28a745;
+        }
+
+        @media (max-width: 576px) {
+            .payment-card {
+                width: 90%;
+            }
+        }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: red;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        .custom-modal-dialog {
+        max-width: 400px;
+        margin: auto;
+    }
+
+    .custom-modal-content {
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        background-color: #ffffff;
+        overflow: hidden;
+    }
+
+    .custom-modal-header {
+        background-color: #007bff;
+        color: white;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .custom-modal-title {
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .custom-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .custom-modal-body {
+        padding: 20px;
+        font-size: 16px;
+        color: #333;
+        text-align: center;
+    }
+
+    .custom-modal-footer {
+        padding: 10px;
+        text-align: center;
+        background-color: #f8f9fa;
+    }
+
+    .custom-modal-footer .btn {
+        width: 100px;
+    }
+    </style>
+</head>
+<body>
+    <div class="payment-card">
+        <h2>Mobile Payment</h2>
+        <div class="form-group">
+            <label for="mobileNumber">Mobile Number</label>
+            <input type="tel" class="form-control" id="mobileNumber" placeholder="Enter mobile number">
+        </div>
+        <button class="btn btn-primary btn-pay" onclick="makePayment()">Pay</button>
+
+        <footer class="footer">
+            <a href="https://wa.me/250725414412?text=Can%20you%20help%20me%20for%20assistance%20on%20how%20can%20I%20make%20payment" target="_blank"><i class="fab fa-whatsapp"></i> Contact via WhatsApp</a>
+        </footer>
+    </div>
+
+    <button class="floating-btn" onclick="goToDemoPage()">
+        Open Demo
+    </button>
+
+    <!-- Add this modal structure inside the body -->
+
+
+
+    <script>
+        function makePayment() {
+            const mobileNumber = document.getElementById('mobileNumber').value;
+    
+            // Validate if the mobile number is entered
+            if (!mobileNumber) {
+                alert("Please enter a mobile number.");
+                return;
+            }
+    
+            // Validate the length of the mobile number
+            if (mobileNumber.length >= 11) {
+                alert("Mobile number should be less than 11 digits.");
+                return;
+            }
+    
+            // Determine the USSD code based on the prefix
+            let ussdCode = '';
+            if (mobileNumber.startsWith('072') || mobileNumber.startsWith('073')) {
+                ussdCode = `*500*1*1*0725414412*30000#`;
+            } else if (mobileNumber.startsWith('078') || mobileNumber.startsWith('079')) {
+                ussdCode = `*182*1*2*0725414412*30000#`;
+            } else {
+                alert("Invalid mobile number. It should start with 072, 073, 078, or 079.");
+                return;
+            }
+    
+            // Check if the user is on a mobile device
+            const isMobileDevice = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent);
+    
+            if (isMobileDevice) {
+                // Encode the USSD code and open the phone app
+                const encodedUssdCode = encodeURIComponent(ussdCode);
+                const ussdLink = `tel:${encodedUssdCode}`;
+                window.location.href = ussdLink;
+            } else {
+                // Show an alert with the USSD code for laptop/desktop users
+                alert(`To make a payment, dial the following USSD code on your phone: ${ussdCode}`);
+            }
+        }
+    </script>
+</body>
+</html>

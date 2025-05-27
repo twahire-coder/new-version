@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - Aviator Predictor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-red-900 min-h-screen flex items-center justify-center px-4">
+  <div class="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-3xl font-bold text-red-900">Login</h2>
+      
+    </div>
+    
+    <form id="loginForm" class="space-y-6">
+      <div>
+        <label for="email" class="block text-red-900 font-semibold mb-1">Email</label>
+        <input type="email" id="email" name="email" required class="w-full border border-red-300 rounded px-3 py-2" />
+      </div>
+      <div>
+        <label for="password" class="block text-red-900 font-semibold mb-1">Password</label>
+        <input type="password" id="password" name="password" required class="w-full border border-red-300 rounded px-3 py-2" />
+      </div>
+      <button type="submit" class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-2 rounded">
+        Login
+      </button>
+    </form>
+
+    <p class="mt-6 text-center text-red-900">
+      Don't have an account?
+      <a href="signup.html" class="underline hover:text-red-800 font-semibold">Sign up here</a>
+    </p>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const password = document.getElementById('password').value;
+
+      try {
+        const res = await fetch('http://localhost:3000/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        alert(`Welcome back, ${data.username}!`);
+
+        if (data.role === 'admin') {
+          window.location.href = 'admin.html';
+        } else if (data.isActivated) {
+          window.location.href = 'check.html';
+        } else {
+          let countdown = 2;
+          const alertBox = document.createElement('div');
+          alertBox.className =
+            'fixed top-4 left-1/2 transform -translate-x-1/2 bg-yellow-200 text-yellow-900 font-semibold py-2 px-4 rounded shadow-lg z-50';
+          alertBox.textContent = `Redirecting in ${countdown} seconds...`;
+          document.body.appendChild(alertBox);
+
+          const interval = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+              alertBox.textContent = `Redirecting in ${countdown} seconds...`;
+            } else {
+              clearInterval(interval);
+              document.body.removeChild(alertBox);
+              window.location.href = 'country.html';
+            }
+          }, 1000);
+        }
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+
+    async function logout() {
+      try {
+        const res = await fetch('http://localhost:3000/api/logout', {
+          method: 'POST',
+          credentials: 'include'
+        });
+        const data = await res.json();
+        alert(data.message || "Logged out.");
+        window.location.href = 'login.html';
+      } catch (err) {
+        alert("Logout failed.");
+      }
+    }
+  </script>
+</body>
+</html>

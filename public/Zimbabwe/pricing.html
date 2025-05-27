@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4078728669571636" crossorigin="anonymous"></script>
+    <meta charset="UTF-8" />
+    <title>Price Trial</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/font-awesome.min.css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/animate-wow.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/bootstrap-select.min.css" />
+    <link rel="stylesheet" href="css/slick.min.css" />
+    <link rel="stylesheet" href="css/pricing.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+</head>
+<body>
+    <div class="row">
+        <div class="pricing-container wow fadeIn" data-wow-delay="0.2s">
+            <div class="pricing-switcher">
+                <p class="fieldset">
+                    <input type="radio" name="duration-1" value="monthly" id="monthly-1" checked />
+                    <label for="monthly-1">Weekly</label>
+                    <input type="radio" name="duration-1" value="yearly" id="yearly-1" />
+                    <label for="yearly-1">Monthly</label>
+                    <span class="switch"></span>
+                </p>
+            </div>
+            <ul class="pricing-list bounce-invert">
+                <li>
+                    <ul class="pricing-wrapper">
+                        <li data-type="monthly" class="is-visible">
+                            <header class="pricing-header">
+                                <h2 style="color:green;">BETPAWA</h2>
+                                <p>AVIATOR</p>
+                            </header>
+                            <div class="pricing-body">
+                                <ul class="pricing-features">
+                                    <li>PREDICTION DETAIL</li>
+                                    <li>6 Hours Per Day In Week</li>
+                                    <li>Analytics</li>
+                                </ul>
+                                <div class="plan_price">
+                                    9,363 UGX / Week
+                                    <br />
+                                    <span id="price-zwl-week"></span>
+                                </div>
+                                <a class="select" href="payment/product.html">PAY</a>
+                            </div>
+                        </li>
+                        <li data-type="yearly" class="is-visible">
+                            <header class="pricing-header">
+                                <h2 style="color:green;">BETPAWA</h2>
+                                <p>AVIATOR</p>
+                            </header>
+                            <div class="pricing-body">
+                                <ul class="pricing-features">
+                                    <li>PREDICTION DETAIL</li>
+                                    <li>6 Hours Per Day In Month</li>
+                                    <li>Analytics</li>
+                                </ul>
+                                <div class="plan_price">
+                                    18,727 UGX / Month
+                                    <br />
+                                    <span id="price-zwl-month"></span>
+                                </div>
+                                <a class="select" href="payment/product.html">PAY</a>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="contact-whatsapp">
+                <a href="https://wa.me/250725414412" class="btn btn-success btn-block" target="_blank">
+                    <i class="fa fa-whatsapp"></i> Contact on WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Exchange rate: UGX to Zimbabwean Dollar (ZWL)
+        const exchangeRateZWL = 0.41; // Approximate rate, update if needed
+
+        // Prices in UGX
+        const priceUGXWeek = 9363;
+        const priceUGXMonth = 18727;
+
+        // Convert UGX prices to ZWL
+        const priceZWLWeek = (priceUGXWeek * exchangeRateZWL).toFixed(2);
+        const priceZWLMonth = (priceUGXMonth * exchangeRateZWL).toFixed(2);
+
+        // Show converted prices
+        document.getElementById('price-zwl-week').textContent = `≈ Z$${priceZWLWeek}`;
+        document.getElementById('price-zwl-month').textContent = `≈ Z$${priceZWLMonth}`;
+    </script>
+
+    <!-- Main JS -->
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-select.min.js"></script>
+    <script src="js/slick.min.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/wow.min.js"></script>
+    <script src="js/custom.js"></script>
+</body>
+</html>

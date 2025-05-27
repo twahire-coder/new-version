@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Panel - Manage Users</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-red-900 min-h-screen text-white">
+  <header class="bg-red-800 p-4 shadow-md flex justify-between items-center">
+    <h1 class="text-2xl font-bold">Admin Panel - Manage Users</h1>
+    <button id="logoutBtn" class="bg-white text-red-900 font-semibold px-4 py-2 rounded hover:bg-red-100 transition">
+      Logout
+    </button>
+  </header>
+
+  <main class="max-w-5xl mx-auto mt-8 p-4 bg-red-700 rounded-lg shadow-lg">
+    <h2 class="text-xl font-semibold mb-4">Registered Users</h2>
+
+    <table class="w-full table-auto border-collapse border border-red-600">
+      <thead>
+        <tr class="bg-red-800 text-white">
+          <th class="border border-red-600 px-4 py-2">Username</th>
+          <th class="border border-red-600 px-4 py-2">Email</th>
+          <th class="border border-red-600 px-4 py-2">Activated</th>
+          <th class="border border-red-600 px-4 py-2">Role</th>
+          <th class="border border-red-600 px-4 py-2">Action</th>
+        </tr>
+      </thead>
+      <tbody id="usersTableBody" class="bg-red-600">
+        <!-- Users will be populated here -->
+      </tbody>
+    </table>
+  </main>
+
+  <script>
+    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+    if (!loggedInUser || loggedInUser.role !== 'admin') {
+      alert('Access denied. Please log in as admin.');
+      window.location.href = 'login.html';
+    }
+
+    const usersTableBody = document.getElementById('usersTableBody');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    async function loadUsers() {
+      try {
+        const res = await fetch('http://localhost:3000/api/users');
+        if (!res.ok) throw new Error('Could not fetch users');
+        const users = await res.json();
+        renderUsers(users);
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    function renderUsers(users) {
+      usersTableBody.innerHTML = '';
+
+      users.forEach(user => {
+        const isAdmin = user.role === 'admin';
+
+        const tr = document.createElement('tr');
+        tr.classList.add('hover:bg-red-500');
+
+        const buttonHTML = isAdmin
+          ? '<span class="italic text-gray-400">N/A</span>'
+          : `<button data-id='${user._id}' class='toggleActivation bg-white text-red-900 font-semibold px-3 py-1 rounded hover:bg-red-100 transition'>
+              ${user.isActivated ? 'Deactivate' : 'Activate'}
+             </button>`;
+
+        tr.innerHTML = `
+          <td class="border border-red-600 px-4 py-2">${user.username || '-'}</td>
+          <td class="border border-red-600 px-4 py-2">${user.email}</td>
+          <td class="border border-red-600 px-4 py-2 text-center">${user.isActivated ? 'Yes' : 'No'}</td>
+          <td class="border border-red-600 px-4 py-2 text-center">${user.role}</td>
+          <td class="border border-red-600 px-4 py-2 text-center">${buttonHTML}</td>
+        `;
+
+        usersTableBody.appendChild(tr);
+      });
+
+      // Button Handlers
+      document.querySelectorAll('.toggleActivation').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const userId = btn.getAttribute('data-id');
+          try {
+            const res = await fetch(`http://localhost:3000/api/users/${userId}/toggle`, { method: 'PATCH' });
+            if (!res.ok) {
+              const errText = await res.text();
+              throw new Error(errText || 'Failed to update user');
+            }
+            loadUsers(); // Refresh
+          } catch (err) {
+            alert(err.message);
+          }
+        });
+      });
+    }
+
+    logoutBtn.addEventListener('click', () => {
+      sessionStorage.removeItem('loggedInUser');
+      alert('Logged out successfully.');
+      window.location.href = 'login.html';
+    });
+
+    loadUsers(); // Load on page ready
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <title>Price Trial</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- FontAwesome CDN for WhatsApp Icon -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-6">
+
+  <main class="max-w-lg w-full bg-white rounded-xl shadow-lg p-8">
+    <!-- Duration switch -->
+    <fieldset
+      class="flex justify-center gap-10 mb-12"
+      role="radiogroup"
+      aria-label="Select subscription duration"
+    >
+      <label
+        for="weekly"
+        class="cursor-pointer rounded-full border-2 border-green-600 px-6 py-2 text-green-600 font-semibold select-none hover:bg-green-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-400"
+      >
+        <input
+          type="radio"
+          name="duration"
+          id="weekly"
+          value="weekly"
+          checked
+          class="hidden peer"
+          aria-checked="true"
+        />
+        Weekly
+      </label>
+
+      <label
+        for="monthly"
+        class="cursor-pointer rounded-full border-2 border-green-600 px-6 py-2 text-green-600 font-semibold select-none hover:bg-green-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-400"
+      >
+        <input
+          type="radio"
+          name="duration"
+          id="monthly"
+          value="monthly"
+          class="hidden peer"
+          aria-checked="false"
+        />
+        Monthly
+      </label>
+    </fieldset>
+
+    <!-- Pricing Plans -->
+    <ul id="pricing-list" class="space-y-10">
+      <!-- Weekly Plan -->
+      <li
+        data-duration="weekly"
+        class="rounded-lg border border-green-600 bg-green-50 p-6 shadow-sm transition-shadow hover:shadow-lg"
+        role="region"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <header class="mb-4 text-center">
+          <h2 class="text-3xl font-bold text-green-700">BETPAWA</h2>
+          <p class="text-green-800 text-lg">AVIATOR</p>
+        </header>
+        <ul class="mb-6 list-disc list-inside text-green-900 space-y-1 text-base">
+          <li>PREDICTION DETAIL</li>
+          <li>6 Hours Per Day In Week</li>
+          <li>Analytics</li>
+        </ul>
+        <div class="mb-6 text-center text-2xl font-extrabold text-green-800">
+          126,462 UGX / Week
+        </div>
+        <a
+          href="payment/payment 60.html"
+          class="block rounded-full bg-green-600 px-10 py-3 text-center font-bold text-white transition hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
+          aria-label="Pay for weekly subscription"
+          >PAY</a
+        >
+      </li>
+
+      <!-- Monthly Plan -->
+      <li
+        data-duration="monthly"
+        class="hidden rounded-lg border border-green-600 bg-green-50 p-6 shadow-sm transition-shadow hover:shadow-lg"
+        role="region"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <header class="mb-4 text-center">
+          <h2 class="text-3xl font-bold text-green-700">BETPAWA</h2>
+          <p class="text-green-800 text-lg">AVIATOR</p>
+        </header>
+        <ul class="mb-6 list-disc list-inside text-green-900 space-y-1 text-base">
+          <li>PREDICTION DETAIL</li>
+          <li>6 Hours Per Day In Month</li>
+          <li>Analytics</li>
+        </ul>
+        <div class="mb-6 text-center text-2xl font-extrabold text-green-800">
+          252,923 UGX / Month
+        </div>
+        <a
+          href="payment/payment 60.html"
+          class="block rounded-full bg-green-600 px-10 py-3 text-center font-bold text-white transition hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
+          aria-label="Pay for monthly subscription"
+          >PAY</a
+        >
+      </li>
+    </ul>
+
+    <!-- WhatsApp Contact -->
+    <div class="mt-12 text-center">
+      <a
+        href="https://wa.me/250725414412"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center gap-3 rounded-full bg-green-600 px-8 py-3 font-semibold text-white shadow-lg transition hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
+        aria-label="Contact on WhatsApp"
+      >
+        <i class="fab fa-whatsapp text-2xl"></i>
+        Contact on WhatsApp
+      </a>
+    </div>
+  </main>
+
+  <script>
+    // Toggle plans based on radio button selection
+    const radios = document.querySelectorAll('input[name="duration"]');
+    const plans = document.querySelectorAll('#pricing-list > li');
+
+    radios.forEach((radio) => {
+      radio.addEventListener('change', () => {
+        const selected = radio.value;
+        plans.forEach((plan) => {
+          if (plan.dataset.duration === selected) {
+            plan.classList.remove('hidden');
+          } else {
+            plan.classList.add('hidden');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

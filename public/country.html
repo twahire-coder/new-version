@@ -1,0 +1,205 @@
+<script>
+  const sessionUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+
+  if (!sessionUser) {
+    alert("You must log in first.");
+    window.location.href = "../index.html";
+  }
+
+  // Optional: Redirect if wrong role
+  if (window.location.pathname.includes("admin") && sessionUser.role !== "admin") {
+    alert("Access denied.");
+    window.location.href = "../index.html";
+  }
+</script>
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Aviator Predictor Country Selection" />
+  <meta name="keywords" content="Predictor, Aviator, Betting Tips, Country Selector" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Choose Your Country - Aviator Predictor</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-red-900 min-h-screen py-12 px-4 text-white">
+  <main class="max-w-7xl mx-auto">
+    <h1 class="text-3xl sm:text-4xl font-bold text-center mb-10 drop-shadow">
+      Select Your Country to Access Aviator Predictor
+    </h1>
+
+    <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <!-- Template for a Country Card -->
+      <!-- Just copy and paste to add more countries -->
+      <!-- Each card has a background, flag, name, and link -->
+
+      <!-- Rwanda -->
+      <div class="bg-white text-gray-800 rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition">
+        <div class="h-40 bg-cover bg-center" style="background-image: url('img/featured/feature-1.jpg');"></div>
+        <div class="p-5 text-center">
+          <img src="https://flagcdn.com/w80/rw.png" alt="Rwanda Flag" class="w-12 h-8 mx-auto mb-2 rounded shadow" />
+          <h2 class="font-bold text-lg mb-3">Rwanda</h2>
+          <a href="bettingRW/pricing.html"
+            class="inline-block bg-red-700 hover:bg-red-800 text-white font-medium px-5 py-2 rounded transition">
+            Get Started
+          </a>
+        </div>
+      </div>
+
+      <!-- Kenya -->
+      <div class="bg-white text-gray-800 rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition">
+        <div class="h-40 bg-cover bg-center" style="background-image: url('img/featured/feature-2.jpg');"></div>
+        <div class="p-5 text-center">
+          <img src="https://flagcdn.com/w80/ke.png" alt="Kenya Flag" class="w-12 h-8 mx-auto mb-2 rounded shadow" />
+          <h2 class="font-bold text-lg mb-3">Kenya</h2>
+          <a href="bettingke/pricing.html"
+            class="inline-block bg-red-700 hover:bg-red-800 text-white font-medium px-5 py-2 rounded transition">
+            Get Started
+          </a>
+        </div>
+      </div>
+
+      <!-- Uganda -->
+      <div class="bg-white text-gray-800 rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition">
+        <div class="h-40 bg-cover bg-center" style="background-image: url('img/featured/feature-4.jpg');"></div>
+        <div class="p-5 text-center">
+          <img src="https://flagcdn.com/w80/ug.png" alt="Uganda Flag" class="w-12 h-8 mx-auto mb-2 rounded shadow" />
+          <h2 class="font-bold text-lg mb-3">Uganda</h2>
+          <a href="bettingug/pricing.html"
+            class="inline-block bg-red-700 hover:bg-red-800 text-white font-medium px-5 py-2 rounded transition">
+            Get Started
+          </a>
+        </div>
+      </div>
+
+      <!-- Nigeria -->
+      <div class="bg-white text-gray-800 rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition">
+        <div class="h-40 bg-cover bg-center" style="background-image: url('img/featured/feature-3.jpg');"></div>
+        <div class="p-5 text-center">
+          <img src="https://flagcdn.com/w80/ng.png" alt="Nigeria Flag" class="w-12 h-8 mx-auto mb-2 rounded shadow" />
+          <h2 class="font-bold text-lg mb-3">Nigeria</h2>
+          <a href="bettingug/pricing.html"
+            class="inline-block bg-red-700 hover:bg-red-800 text-white font-medium px-5 py-2 rounded transition">
+            Get Started
+          </a>
+        </div>
+      </div>
+
+      <!-- Ghana -->
+      <div class="bg-white text-gray-800 rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition">
+        <div class="h-40 bg-cover bg-center" style="background-image: url('img/featured/feature-2.jpg');"></div>
+        <div class="p-5 text-center">
+          <img src="https://flagcdn.com/w80/gh.png" alt="Ghana Flag" class="w-12 h-8 mx-auto mb-2 rounded shadow" />
+          <h2 class="font-bold text-lg mb-3">Ghana</h2>
+          <a href="bettingGhana/pricing.html"
+            class="inline-block bg-red-700 hover:bg-red-800 text-white font-medium px-5 py-2 rounded transition">
+            Get Started
+          </a>
+        </div>
+      </div>
+
+      <!-- Mozambique -->
+      <div class="bg-white text-gray-800 rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition">
+        <div class="h-40 bg-cover bg-center" style="background-image: url('img/featured/feature-2.jpg');"></div>
+        <div class="p-5 text-center">
+          <img src="https://flagcdn.com/w80/mz.png" alt="Mozambique Flag" class="w-12 h-8 mx-auto mb-2 rounded shadow" />
+          <h2 class="font-bold text-lg mb-3">Mozambique</h2>
+          <a href="bettingMozambique/pricing.html"
+            class="inline-block bg-red-700 hover:bg-red-800 text-white font-medium px-5 py-2 rounded transition">
+            Get Started
+          </a>
+        </div>
+      </div>
+
+      <!-- Sierra Leone -->
+      <div class="bg-white text-gray-800 rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition">
+        <div class="h-40 bg-cover bg-center" style="background-image: url('img/featured/feature-3.jpg');"></div>
+        <div class="p-5 text-center">
+          <img src="https://flagcdn.com/w80/sl.png" alt="Sierra Leone Flag" class="w-12 h-8 mx-auto mb-2 rounded shadow" />
+          <h2 class="font-bold text-lg mb-3">Sierra Leone</h2>
+          <a href="bettingSier/pricing.html"
+            class="inline-block bg-red-700 hover:bg-red-800 text-white font-medium px-5 py-2 rounded transition">
+            Get Started
+          </a>
+        </div>
+      </div>
+
+      <!-- Benin -->
+      <div class="bg-white text-gray-800 rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition">
+        <div class="h-40 bg-cover bg-center" style="background-image: url('img/featured/feature-2.jpg');"></div>
+        <div class="p-5 text-center">
+          <img src="https://flagcdn.com/w80/bj.png" alt="Benin Flag" class="w-12 h-8 mx-auto mb-2 rounded shadow" />
+          <h2 class="font-bold text-lg mb-3">Benin</h2>
+          <a href="bettingBenin/pricing.html"
+            class="inline-block bg-red-700 hover:bg-red-800 text-white font-medium px-5 py-2 rounded transition">
+            Get Started
+          </a>
+        </div>
+      </div>
+
+      <!-- Cameroon -->
+      <div class="bg-white text-gray-800 rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition">
+        <div class="h-40 bg-cover bg-center" style="background-image: url('img/featured/feature-4.jpg');"></div>
+        <div class="p-5 text-center">
+          <img src="https://flagcdn.com/w80/cm.png" alt="Cameroon Flag" class="w-12 h-8 mx-auto mb-2 rounded shadow" />
+          <h2 class="font-bold text-lg mb-3">Cameroon</h2>
+          <a href="bettingcameroon/pricing.html"
+            class="inline-block bg-red-700 hover:bg-red-800 text-white font-medium px-5 py-2 rounded transition">
+            Get Started
+          </a>
+        </div>
+      </div>
+
+      <!-- Malawi -->
+      <div class="bg-white text-gray-800 rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition">
+        <div class="h-40 bg-cover bg-center" style="background-image: url('img/featured/feature-3.jpg');"></div>
+        <div class="p-5 text-center">
+          <img src="https://flagcdn.com/w80/mw.png" alt="Malawi Flag" class="w-12 h-8 mx-auto mb-2 rounded shadow" />
+          <h2 class="font-bold text-lg mb-3">Malawi</h2>
+          <a href="bettingMalawi/pricing.html"
+            class="inline-block bg-red-700 hover:bg-red-800 text-white font-medium px-5 py-2 rounded transition">
+            Get Started
+          </a>
+        </div>
+      </div>
+
+      <!-- Zimbabwe -->
+      <div class="bg-white text-gray-800 rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition">
+        <div class="h-40 bg-cover bg-center" style="background-image: url('https://flagcdn.com/w80/zw.png');"></div>
+        <div class="p-5 text-center">
+          <img src="https://flagcdn.com/w80/zw.png" alt="Zimbabwe Flag" class="w-12 h-8 mx-auto mb-2 rounded shadow" />
+          <h2 class="font-bold text-lg mb-3">Zimbabwe</h2>
+          <a href="Zimbabwe/pricing.html"
+            class="inline-block bg-red-700 hover:bg-red-800 text-white font-medium px-5 py-2 rounded transition">
+            Get Started
+          </a>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    
+  </script>
+</body>
+
+</html>

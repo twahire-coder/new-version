@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mobile Payment</title>
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+  />
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f8f9fa;
+      position: relative;
+    }
+
+    .payment-card {
+      max-width: 400px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background-color: #ffffff;
+    }
+
+    .payment-card h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .payment-card .form-group {
+      margin-bottom: 20px;
+    }
+
+    .payment-card .btn-pay {
+      width: 100%;
+      background-color: #007bff;
+      border: none;
+      color: white;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .footer a {
+      color: #28a745;
+    }
+
+    @media (max-width: 576px) {
+      .payment-card {
+        width: 90%;
+      }
+    }
+
+    .floating-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: red;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
+
+    .edit-save-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="payment-card">
+    <h2>Mobile Payment</h2>
+    <div class="form-group">
+      <label for="mobileNumber">Mobile Number</label>
+      <input
+        type="tel"
+        class="form-control"
+        id="mobileNumber"
+        placeholder="Enter mobile number"
+        maxlength="10"
+      />
+    </div>
+
+    <div class="edit-save-group">
+      <button id="editBtn" class="btn btn-outline-primary" disabled>Edit</button>
+      <button id="saveBtn" class="btn btn-primary" disabled>Save</button>
+    </div>
+
+    <button class="btn btn-primary btn-pay" onclick="makePayment()">
+      Pay
+    </button>
+
+    <footer class="footer mt-4">
+      <a
+        href="https://wa.me/250725414412?text=Can%20you%20help%20me%20for%20assistance%20on%20how%20can%20I%20make%20payment"
+        target="_blank"
+        ><i class="fab fa-whatsapp"></i> Contact via WhatsApp</a
+      >
+    </footer>
+  </div>
+
+  <button class="floating-btn" onclick="goToDemoPage()">Open Demo</button>
+
+  <script>
+    // On page load, fetch user's saved mobile number
+    document.addEventListener('DOMContentLoaded', async () => {
+      const input = document.getElementById('mobileNumber');
+      const editBtn = document.getElementById('editBtn');
+      const saveBtn = document.getElementById('saveBtn');
+
+      try {
+        const res = await fetch('http://localhost:3000/api/mobile', {
+          credentials: 'include', // send cookies/session info
+        });
+        if (!res.ok) throw new Error('Failed to fetch mobile number');
+
+        const data = await res.json();
+
+        if (data.mobileNumber) {
+          // Prefill input and disable editing
+          input.value = data.mobileNumber;
+          input.disabled = true;
+
+          // Enable Edit button, disable Save initially
+          editBtn.disabled = false;
+          saveBtn.disabled = true;
+        } else {
+          // No mobile number saved yet, input enabled for entry
+          input.value = '';
+          input.disabled = false;
+
+          editBtn.disabled = true;
+          saveBtn.disabled = false;
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Error loading user data.');
+        // Enable input & Save button to allow entry anyway
+        input.disabled = false;
+        editBtn.disabled = true;
+        saveBtn.disabled = false;
+      }
+    });
+
+    // Edit button toggles input enabled
+    document.getElementById('editBtn').addEventListener('click', () => {
+      const input = document.getElementById('mobileNumber');
+      input.disabled = false;
+      input.focus();
+
+      // Enable Save, disable Edit
+      document.getElementById('saveBtn').disabled = false;
+      document.getElementById('editBtn').disabled = true;
+    });
+
+    // Save button sends updated mobile number to backend
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+      const input = document.getElementById('mobileNumber');
+      const mobileNumber = input.value.trim();
+
+      // Basic validation
+      if (!mobileNumber) {
+        alert('Please enter a mobile number.');
+        return;
+      }
+      if (mobileNumber.length > 10) {
+        alert('Mobile number should be 10 digits or less.');
+        return;
+      }
+
+      try {
+        const res = await fetch('http://localhost:3000/api/mobile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ mobileNumber }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to save mobile number');
+
+        alert('Mobile number updated successfully.');
+
+        // Disable input and toggle buttons
+        input.disabled = true;
+        document.getElementById('editBtn').disabled = false;
+        document.getElementById('saveBtn').disabled = true;
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+
+    // Payment function (same as before)
+    function makePayment() {
+      const mobileNumber = document.getElementById('mobileNumber').value;
+
+      if (!mobileNumber) {
+        alert('Please enter a mobile number.');
+        return;
+      }
+
+      if (mobileNumber.length > 10) {
+        alert('Mobile number should be 10 digits or less.');
+        return;
+      }
+
+      let ussdCode = '';
+      if (mobileNumber.startsWith('072') || mobileNumber.startsWith('073')) {
+        ussdCode = `*500*1*1*0725414412*60000#`;
+      } else if (mobileNumber.startsWith('078') || mobileNumber.startsWith('079')) {
+        ussdCode = `*182*1*2*0725414412*60000#`;
+      } else {
+        alert('Invalid mobile number. It should start with 072, 073, 078, or 079.');
+        return;
+      }
+
+      const isMobileDevice = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(
+        navigator.userAgent
+      );
+
+      if (isMobileDevice) {
+        const encodedUssdCode = encodeURIComponent(ussdCode);
+        const ussdLink = `tel:${encodedUssdCode}`;
+        window.location.href = ussdLink;
+      } else {
+        alert(`To make a payment, dial the following USSD code on your phone: ${ussdCode}`);
+      }
+    }
+
+    // Dummy placeholder for demo button
+    function goToDemoPage() {
+      window.location.href = 'paid.html';
+    }
+  </script>
+</body>
+</html>

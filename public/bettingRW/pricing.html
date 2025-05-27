@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Price Trial - Tailwind Version</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary-dark-blue: #1a2a3a;
+      --primary-green: #39ff14;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--primary-dark-blue);
+      color: white;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    /* Scrollbar fix for better look */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--primary-green);
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center">
+
+  <!-- Pricing toggle -->
+  <div class="mb-8 text-center">
+    <label class="inline-flex items-center cursor-pointer mr-6">
+      <input type="radio" name="duration" value="weekly" checked class="form-radio text-green-500" />
+      <span class="ml-2 select-none">Weekly</span>
+    </label>
+    <label class="inline-flex items-center cursor-pointer">
+      <input type="radio" name="duration" value="monthly" class="form-radio text-green-500" />
+      <span class="ml-2 select-none">Monthly</span>
+    </label>
+  </div>
+
+  <!-- Pricing cards container -->
+  <ul id="pricing-list" class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-7xl w-full">
+
+    <!-- Card template (repeat and update data-duration) -->
+
+    <!-- BETPAWA Weekly -->
+    <li data-duration="weekly" class="pricing-card bg-[var(--primary-dark-blue)] border border-transparent rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-[0_8px_25px_rgba(57,255,20,0.8)] hover:border-[var(--primary-green)] hover:translate-y-[-10px]">
+      <header class="mb-4 text-center">
+        <h2 class="text-[var(--primary-green)] text-2xl font-bold">BETPAWA</h2>
+        <p class="text-white text-sm">AVIATOR</p>
+      </header>
+      <ul class="mb-6 text-[var(--primary-green)] space-y-1 text-sm">
+        <li>PREDICTION DETAIL</li>
+        <li>6 Hours Per Day In Week</li>
+        <li>Analytics</li>
+      </ul>
+      <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
+        30,000 FRW / Week
+      </div>
+      <a href="payment/payment.html" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
+        PAY
+      </a>
+    </li>
+
+    <!-- Winner RW Weekly -->
+    <li data-duration="weekly" class="pricing-card bg-[var(--primary-dark-blue)] border border-transparent rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-[0_8px_25px_rgba(57,255,20,0.8)] hover:border-[var(--primary-green)] hover:translate-y-[-10px]">
+      <header class="mb-4 text-center">
+        <h2 class="text-[var(--primary-green)] text-2xl font-bold">Winner RW</h2>
+        <p class="text-white text-sm">AVIATOR</p>
+      </header>
+      <ul class="mb-6 text-[var(--primary-green)] space-y-1 text-sm">
+        <li>PREDICTOR DETAIL</li>
+        <li>4 hours per day In Month</li>
+      </ul>
+      <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
+        60,000 FRW
+      </div>
+      <a href="payment/payment 60.html" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
+        PAY
+      </a>
+    </li>
+
+    <!-- BETPAWA Pro Weekly -->
+    <li data-duration="weekly" class="pricing-card bg-[var(--primary-dark-blue)] border border-transparent rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-[0_8px_25px_rgba(57,255,20,0.8)] hover:border-[var(--primary-green)] hover:translate-y-[-10px]">
+      <header class="mb-4 text-center">
+        <h2 class="text-[var(--primary-green)] text-2xl font-bold">BETPAWA</h2>
+        <p class="text-white text-sm">PRO AVIATOR</p>
+      </header>
+      <ul class="mb-6 text-[var(--primary-green)] space-y-1 text-sm">
+        <li>Logo and Branding</li>
+        <li>Unlimited Prediction</li>
+        <li>15 hours per day in week</li>
+      </ul>
+      <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
+        60,000 FRW / Week
+      </div>
+      <a href="payment/payment 60.html" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
+        PAY
+      </a>
+    </li>
+
+    <!-- Winner RW Monthly -->
+    <li data-duration="monthly" class="pricing-card hidden bg-[var(--primary-dark-blue)] border border-transparent rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-[0_8px_25px_rgba(57,255,20,0.8)] hover:border-[var(--primary-green)] hover:translate-y-[-10px]">
+      <header class="mb-4 text-center">
+        <h2 class="text-[var(--primary-green)] text-2xl font-bold">Winner RW</h2>
+        <p class="text-white text-sm">AVIATOR</p>
+      </header>
+      <ul class="mb-6 text-[var(--primary-green)] space-y-1 text-sm">
+        <li>PREDICTION DETAIL</li>
+        <li>4 Hours Per Day</li>
+        <li>24 hours per month</li>
+      </ul>
+      <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
+        100,000 FRW / Week
+      </div>
+      <a href="payment/payment.html" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
+        PAY
+      </a>
+    </li>
+
+    <!-- BETPAWA Monthly -->
+    <li data-duration="monthly" class="pricing-card hidden bg-[var(--primary-dark-blue)] border border-transparent rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-[0_8px_25px_rgba(57,255,20,0.8)] hover:border-[var(--primary-green)] hover:translate-y-[-10px]">
+      <header class="mb-4 text-center">
+        <h2 class="text-[var(--primary-green)] text-2xl font-bold">BETPAWA</h2>
+        <p class="text-white text-sm">AVIATOR</p>
+      </header>
+      <ul class="mb-6 text-[var(--primary-green)] space-y-1 text-sm">
+        <li>PREDICTOR DETAIL</li>
+        <li>Unlimited access week</li>
+        <li>Bonus with invitation</li>
+      </ul>
+      <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
+        400,000 FRW / Week
+      </div>
+      <a href="payment/payment.html" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
+        PAY
+      </a>
+    </li>
+
+    <!-- Winner RW Pro Monthly -->
+    <li data-duration="monthly" class="pricing-card hidden bg-[var(--primary-dark-blue)] border border-transparent rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-[0_8px_25px_rgba(57,255,20,0.8)] hover:border-[var(--primary-green)] hover:translate-y-[-10px]">
+      <header class="mb-4 text-center">
+        <h2 class="text-[var(--primary-green)] text-2xl font-bold">Winner RW</h2>
+        <p class="text-white text-sm">PRO AVIATOR</p>
+      </header>
+      <ul class="mb-6 text-[var(--primary-green)] space-y-1 text-sm">
+        <li>Logo and Branding</li>
+        <li>Unlimited Prediction</li>
+        <li>Unlimited access week</li>
+      </ul>
+      <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
+        40,000 FRW / Week
+      </div>
+      <a href="payment/payment.html" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
+        PAY
+      </a>
+    </li>
+
+    <!-- Fortebet Weekly -->
+    <li data-duration="weekly" class="pricing-card bg-[var(--primary-dark-blue)] border border-transparent rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-[0_8px_25px_rgba(57,255,20,0.8)] hover:border-[var(--primary-green)] hover:translate-y-[-10px]">
+      <header class="mb-4 text-center">
+        <h2 class="text-[var(--primary-green)] text-2xl font-bold">Fortebet</h2>
+        <p class="text-white text-sm">AVIATOR</p>
+      </header>
+      <ul class="mb-6 text-[var(--primary-green)] space-y-1 text-sm">
+        <li>PREDICTION DETAIL</li>
+        <li>6 Hours Per Day</li>
+        <li>Analytics</li>
+      </ul>
+      <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
+        30,000 FRW / Week
+      </div>
+      <a href="Payment.html" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
+        PAY
+      </a>
+    </li>
+
+  </ul>
+
+  <script>
+    // Toggle between weekly/monthly plans
+    const radios = document.querySelectorAll('input[name="duration"]');
+    const pricingCards = document.querySelectorAll('.pricing-card');
+
+    radios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        const value = radio.value;
+
+        pricingCards.forEach(card => {
+          if (card.dataset.duration === value) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    // Initial display
+    window.addEventListener('DOMContentLoaded', () => {
+      const checkedRadio = document.querySelector('input[name="duration"]:checked');
+      if (checkedRadio) {
+        radios.forEach(radio => {
+          const value = radio.value;
+          pricingCards.forEach(card => {
+            if (card.dataset.duration === value) {
+              card.classList.remove('hidden');
+            } else {
+              card.classList.add('hidden');
+            }
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>
