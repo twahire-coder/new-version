@@ -70,6 +70,21 @@ app.get('/check', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'check.html'));
 });
 
+app.get('/pricing', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public','bettingRw' ,'pricing.html'));
+});
+app.get('/payment', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public','bettingRw' ,'payment','payment.html'));
+});
+app.get('/payment60', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public','bettingRw' ,'payment','payment 60.html'));
+});
+app.get('/payment100', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public','bettingRw' ,'payment','payment 100.html'));
+});
+app.get('/demo', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public','bettingRw' ,'payment','paid.html'));
+});
 // Signup endpoint
 app.post('/api/signup', async (req, res) => {
   const { username, email, password } = req.body;
