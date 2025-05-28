@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,9 +10,8 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
   />
 </head>
-<body
-  class="bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen flex items-center justify-center px-4 relative"
->
+<body class="bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen flex items-center justify-center px-4 relative">
+
   <!-- Logout Button -->
   <button
     onclick="logout()"
@@ -22,17 +21,11 @@
   </button>
 
   <!-- Main Card -->
-  <div
-    class="bg-white/80 backdrop-blur-md rounded-xl shadow-lg w-full max-w-md p-6 md:p-8 space-y-5"
-  >
+  <div class="bg-white/80 backdrop-blur-md rounded-xl shadow-lg w-full max-w-md p-6 md:p-8 space-y-5">
     <h2 class="text-2xl font-bold text-blue-700 text-center">Mobile Payment</h2>
 
     <div>
-      <label
-        for="mobileNumber"
-        class="block text-gray-700 font-semibold mb-1"
-        >Mobile Number</label
-      >
+      <label for="mobileNumber" class="block text-gray-700 font-semibold mb-1">Mobile Number</label>
       <input
         type="tel"
         id="mobileNumber"
@@ -49,6 +42,14 @@
       Pay
     </button>
 
+    <button
+      id="paidButton"
+      onclick="handlePaid()"
+      class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg shadow-md transition duration-200 hidden"
+    >
+      Paid
+    </button>
+
     <footer class="text-center text-sm text-green-600">
       <a
         href="https://wa.me/250725414412?text=Can%20you%20help%20me%20for%20assistance%20on%20how%20can%20I%20make%20payment"
@@ -60,6 +61,7 @@
     </footer>
   </div>
 
+  <!-- Demo Page Button -->
   <button
     onclick="goToDemoPage()"
     class="fixed bottom-5 right-5 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full shadow-md z-50 transition duration-200 text-sm"
@@ -70,12 +72,14 @@
   <script>
     const mobileInput = document.getElementById("mobileNumber");
 
-    // Fetch logged-in user's mobile number on load
+    // Load mobile number on page load
+    window.addEventListener("DOMContentLoaded", loadMobileNumber);
+
     async function loadMobileNumber() {
       try {
         const res = await fetch("/api/mobile", {
           method: "GET",
-          credentials: "include", // Important for session cookies
+          credentials: "include",
         });
 
         if (res.status === 401) {
@@ -96,16 +100,15 @@
       }
     }
 
-    // Auto-save mobile number to backend as user types (debounced)
+    // Auto-save mobile number (debounced)
     let saveTimeout;
     mobileInput.addEventListener("input", () => {
       clearTimeout(saveTimeout);
-      saveTimeout = setTimeout(saveMobileNumber, 700); // debounce 700ms
+      saveTimeout = setTimeout(saveMobileNumber, 700);
     });
 
     async function saveMobileNumber() {
       const number = mobileInput.value.trim();
-      // Optionally, validate here before sending
       try {
         const res = await fetch("/api/mobile", {
           method: "POST",
@@ -138,26 +141,47 @@
       let ussdCode = "";
       if (mobileNumber.startsWith("072") || mobileNumber.startsWith("073")) {
         ussdCode = "*500*1*1*0725414412*60000#";
-      } else if (
-        mobileNumber.startsWith("078") ||
-        mobileNumber.startsWith("079")
-      ) {
+      } else if (mobileNumber.startsWith("078") || mobileNumber.startsWith("079")) {
         ussdCode = "*182*1*2*0725414412*60000#";
       } else {
-        alert(
-          "Invalid mobile number. It should start with 072, 073, 078, or 079."
-        );
+        alert("Invalid mobile number. It should start with 072, 073, 078, or 079.");
         return;
       }
 
-      const isMobileDevice = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(
-        navigator.userAgent
-      );
+      const isMobileDevice = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent);
 
       if (isMobileDevice) {
         window.location.href = `tel:${encodeURIComponent(ussdCode)}`;
       } else {
         alert(`To make a payment, dial this code on your phone: ${ussdCode}`);
+      }
+
+      // Show the Paid button
+      document.getElementById("paidButton").classList.remove("hidden");
+    }
+
+    async function handlePaid() {
+      const timestamp = new Date().toISOString();
+
+      try {
+        const res = await fetch("/api/paid", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: "paid", paidAt: timestamp }),
+        });
+
+        if (!res.ok) throw new Error("Failed to save paid status");
+
+        alert("Please log in back to get activated your account.");
+        setTimeout(() => {
+          logout();
+        }, 5000);
+      } catch (err) {
+        console.error("Paid status error:", err);
+        alert("Error saving paid status");
       }
     }
 
@@ -179,9 +203,6 @@
         })
         .catch(() => alert("Logout failed"));
     }
-
-    // Load mobile number on page load
-    window.addEventListener("DOMContentLoaded", loadMobileNumber);
   </script>
 </body>
 </html>
