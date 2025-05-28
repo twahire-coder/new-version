@@ -59,10 +59,21 @@
   </main>
 
   <script>
-    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
-    if (!loggedInUser || loggedInUser.role !== 'admin') {
-      alert('Access denied. Please log in as admin.');
-      window.location.href = '/';
+    // Check admin session on page load by calling a backend endpoint
+    async function checkAdminSession() {
+      try {
+        // We will use /api/session-check endpoint with POST
+        // For admin, we simulate login check by fetching /api/users (only admin can access)
+        const res = await fetch('/api/users', {
+          credentials: 'include',
+        });
+        if (!res.ok) throw new Error('Not authorized. Please login as admin.');
+        return true;
+      } catch (err) {
+        alert(err.message);
+        window.location.href = '/';
+        return false;
+      }
     }
 
     const usersTableBody = document.getElementById('usersTableBody');
@@ -89,8 +100,10 @@
 
     async function loadUsers() {
       try {
-        const res = await fetch('/api/users');
-        if (!res.ok) throw new Error('Could not fetch users');
+        const res = await fetch('/api/users', {
+          credentials: 'include', // send cookies for session
+        });
+        if (!res.ok) throw new Error('Could not fetch users. Make sure you are logged in as admin.');
         allUsers = await res.json();
         renderUsers(allUsers);
       } catch (err) {
@@ -125,7 +138,7 @@
           <td class="border border-red-600 px-4 py-2">${user.email}</td>
           <td class="border border-red-600 px-4 py-2 text-center">${user.isActivated ? 'Yes' : 'No'}</td>
           <td class="border border-red-600 px-4 py-2 text-center">${user.role}</td>
-          <td class="border border-red-600 px-4 py-2 text-center">${formatDateTime(user.lastPaidAt)}</td>
+          <td class="border border-red-600 px-4 py-2 text-center">${formatDateTime(user.paidAt)}</td>
           <td class="border border-red-600 px-4 py-2 text-center">${actions}</td>
         `;
 
@@ -136,7 +149,10 @@
         btn.addEventListener('click', async () => {
           const userId = btn.getAttribute('data-id');
           try {
-            const res = await fetch(`/api/users/${userId}/toggle`, { method: 'PATCH' });
+            const res = await fetch(`/api/users/${userId}/toggle`, {
+              method: 'PATCH',
+              credentials: 'include',
+            });
             if (!res.ok) throw new Error(await res.text());
             loadUsers();
           } catch (err) {
@@ -150,7 +166,10 @@
           const userId = btn.getAttribute('data-id');
           if (!confirm('Are you sure you want to delete this user?')) return;
           try {
-            const res = await fetch(`/api/users/${userId}`, { method: 'DELETE' });
+            const res = await fetch(`/api/users/${userId}`, {
+              method: 'DELETE',
+              credentials: 'include',
+            });
             if (!res.ok) throw new Error(await res.text());
             loadUsers();
           } catch (err) {
@@ -168,30 +187,35 @@
       renderUsers(filteredUsers);
     });
 
-    logoutBtn.addEventListener('click', () => {
-      sessionStorage.removeItem('loggedInUser');
-      alert('Logged out successfully.');
-      window.location.href = '/';
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/logout', {
+          method: 'POST',
+          credentials: 'include',
+        });
+        if (!res.ok) throw new Error('Logout failed');
+        alert('Logged out successfully.');
+        window.location.href = '/';
+      } catch (err) {
+        alert(err.message);
+      }
     });
 
     // Report Button
     viewReportBtn.addEventListener('click', async () => {
       try {
-        const res = await fetch('/api/users/report/monthly');
-        if (!res.ok) throw new Error('Failed to load report');
-        const data = await res.json();
-        const totalUsers = parseInt(data.totalUsers) || 0;
-        const income = totalUsers * 30000;
-        const goal = 500000;
-        const percent = Math.min((income / goal) * 100, 100);
-        const remaining = Math.max(goal - income, 0);
+        const res = await fetch('/api/users/report/monthly', {
+          credentials: 'include',
+        });
+        if (!res.ok) throw new Error(await res.text());
+        const report = await res.json();
 
-        reportUsers.textContent = `Total new users this month: ${totalUsers}`;
-        reportTotal.textContent = `Estimated monthly income: ${income.toLocaleString()} RWF`;
-        reportGoal.textContent = `Goal: ${goal.toLocaleString()} RWF (${percent.toFixed(1)}%) - ${remaining.toLocaleString()} RWF remaining`;
-
-        reportProgress.style.width = `${percent}%`;
-        reportProgress.textContent = percent >= 10 ? `${percent.toFixed(0)}%` : '';
+        reportUsers.textContent = `Total Users: ${report.users}`;
+        reportTotal.textContent = `Total Paid Amount: ₦${report.total}`;
+        reportGoal.textContent = `Goal: ₦${report.goal}`;
+        const percentage = Math.min((report.total / report.goal) * 100, 100);
+        reportProgress.style.width = `${percentage}%`;
+        reportProgress.textContent = `${percentage.toFixed(2)}%`;
 
         reportSection.classList.remove('hidden');
         reportSection.scrollIntoView({ behavior: 'smooth' });
@@ -200,7 +224,11 @@
       }
     });
 
-    loadUsers();
+    // On page load
+    (async () => {
+      const ok = await checkAdminSession();
+      if (ok) loadUsers();
+    })();
   </script>
 </body>
 </html>
