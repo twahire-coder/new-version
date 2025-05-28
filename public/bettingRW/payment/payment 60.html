@@ -14,51 +14,53 @@
   />
   <style>
     body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
       background-color: #f8f9fa;
-      position: relative;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
     }
 
     .payment-card {
-      max-width: 400px;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 15px;
+      background-color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
     .payment-card h2 {
       text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .edit-save-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
       margin-bottom: 20px;
     }
 
-    .payment-card .form-group {
-      margin-bottom: 20px;
-    }
-
-    .payment-card .btn-pay {
+    .btn-pay {
       width: 100%;
       background-color: #007bff;
       border: none;
       color: white;
+      font-weight: bold;
+    }
+
+    .btn-pay:hover {
+      background-color: #0056b3;
     }
 
     .footer {
       text-align: center;
-      margin-top: 30px;
+      margin-top: 20px;
     }
 
     .footer a {
       color: #28a745;
-    }
-
-    @media (max-width: 576px) {
-      .payment-card {
-        width: 90%;
-      }
     }
 
     .floating-btn {
@@ -75,105 +77,97 @@
       z-index: 1000;
     }
 
-    .edit-save-group {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
+    .logout-btn {
+      margin-top: 15px;
+      width: 100%;
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .logout-btn:hover {
+      background-color: #5a6268;
     }
   </style>
 </head>
 <body>
-  <div class="payment-card">
-    <h2>Mobile Payment</h2>
-    <div class="form-group">
-      <label for="mobileNumber">Mobile Number</label>
-      <input
-        type="tel"
-        class="form-control"
-        id="mobileNumber"
-        placeholder="Enter mobile number"
-        maxlength="10"
-      />
+  <div class="container">
+    <div class="payment-card">
+      <h2>Mobile Payment</h2>
+
+      <div class="form-group">
+        <label for="mobileNumber">Mobile Number</label>
+        <input
+          type="tel"
+          class="form-control"
+          id="mobileNumber"
+          placeholder="Enter mobile number"
+          maxlength="10"
+        />
+      </div>
+
+      <div class="edit-save-group">
+        <button id="editBtn" class="btn btn-outline-primary" disabled>Edit</button>
+        <button id="saveBtn" class="btn btn-primary" disabled>Save</button>
+      </div>
+
+      <button class="btn btn-pay mb-3" onclick="makePayment()">Pay</button>
+
+      <button class="btn logout-btn" onclick="logout()">Logout</button>
+
+      <footer class="footer mt-4">
+        <a
+          href="https://wa.me/250725414412?text=Can%20you%20help%20me%20for%20assistance%20on%20how%20can%20I%20make%20payment"
+          target="_blank"
+        ><i class="fab fa-whatsapp"></i> Contact via WhatsApp</a>
+      </footer>
     </div>
-
-    <div class="edit-save-group">
-      <button id="editBtn" class="btn btn-outline-primary" disabled>Edit</button>
-      <button id="saveBtn" class="btn btn-primary" disabled>Save</button>
-    </div>
-
-    <button class="btn btn-primary btn-pay" onclick="makePayment()">
-      Pay
-    </button>
-
-    <footer class="footer mt-4">
-      <a
-        href="https://wa.me/250725414412?text=Can%20you%20help%20me%20for%20assistance%20on%20how%20can%20I%20make%20payment"
-        target="_blank"
-        ><i class="fab fa-whatsapp"></i> Contact via WhatsApp</a
-      >
-    </footer>
   </div>
 
   <button class="floating-btn" onclick="goToDemoPage()">Open Demo</button>
 
   <script>
-    // On page load, fetch user's saved mobile number
     document.addEventListener('DOMContentLoaded', async () => {
       const input = document.getElementById('mobileNumber');
       const editBtn = document.getElementById('editBtn');
       const saveBtn = document.getElementById('saveBtn');
 
       try {
-        const res = await fetch('/api/mobile', {
-          credentials: 'include', // send cookies/session info
-        });
+        const res = await fetch('/api/mobile', { credentials: 'include' });
         if (!res.ok) throw new Error('Failed to fetch mobile number');
-
         const data = await res.json();
 
         if (data.mobileNumber) {
-          // Prefill input and disable editing
           input.value = data.mobileNumber;
           input.disabled = true;
-
-          // Enable Edit button, disable Save initially
           editBtn.disabled = false;
           saveBtn.disabled = true;
         } else {
-          // No mobile number saved yet, input enabled for entry
           input.value = '';
           input.disabled = false;
-
           editBtn.disabled = true;
           saveBtn.disabled = false;
         }
       } catch (error) {
         console.error(error);
         alert('Error loading user data.');
-        // Enable input & Save button to allow entry anyway
         input.disabled = false;
         editBtn.disabled = true;
         saveBtn.disabled = false;
       }
     });
 
-    // Edit button toggles input enabled
     document.getElementById('editBtn').addEventListener('click', () => {
       const input = document.getElementById('mobileNumber');
       input.disabled = false;
       input.focus();
-
-      // Enable Save, disable Edit
       document.getElementById('saveBtn').disabled = false;
       document.getElementById('editBtn').disabled = true;
     });
 
-    // Save button sends updated mobile number to backend
     document.getElementById('saveBtn').addEventListener('click', async () => {
       const input = document.getElementById('mobileNumber');
       const mobileNumber = input.value.trim();
 
-      // Basic validation
       if (!mobileNumber) {
         alert('Please enter a mobile number.');
         return;
@@ -195,8 +189,6 @@
         if (!res.ok) throw new Error(data.error || 'Failed to save mobile number');
 
         alert('Mobile number updated successfully.');
-
-        // Disable input and toggle buttons
         input.disabled = true;
         document.getElementById('editBtn').disabled = false;
         document.getElementById('saveBtn').disabled = true;
@@ -205,7 +197,6 @@
       }
     });
 
-    // Payment function (same as before)
     function makePayment() {
       const mobileNumber = document.getElementById('mobileNumber').value;
 
@@ -242,9 +233,12 @@
       }
     }
 
-    // Dummy placeholder for demo button
     function goToDemoPage() {
       window.location.href = 'paid.html';
+    }
+
+    function logout() {
+      window.location.href = '/';
     }
   </script>
 </body>
