@@ -10,157 +10,141 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <style>
         body {
+            background: url('https://images.unsplash.com/photo-1556740749-887f6717d7e4?fit=crop&w=1050&q=80') no-repeat center center fixed;
+            background-size: cover;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #f8f9fa;
             position: relative;
+            margin: 0;
         }
 
         .payment-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
             max-width: 400px;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background-color: #ffffff;
+            width: 100%;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            text-align: center;
         }
 
         .payment-card h2 {
-            text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            font-weight: bold;
+            color: #333;
         }
 
-        .payment-card .form-group {
-            margin-bottom: 20px;
+        .payment-card .form-control {
+            border-radius: 8px;
         }
 
-        .payment-card .btn-pay {
-            width: 100%;
-            background-color: #007bff;
+        .btn-pay {
+            background-color: #28a745;
             border: none;
-            color: white;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 16px;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .btn-pay:hover {
+            background-color: #218838;
         }
 
         .footer {
-            text-align: center;
-            margin-top: 30px;
+            margin-top: 20px;
         }
 
         .footer a {
-            color: #28a745;
+            color: #007bff;
+            text-decoration: none;
         }
 
-        @media (max-width: 576px) {
-            .payment-card {
-                width: 90%;
-            }
+        .footer a:hover {
+            text-decoration: underline;
         }
 
         .floating-btn {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: red;
+            background-color: #007bff;
             color: white;
             padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 30px;
             border: none;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             z-index: 1000;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-        .custom-modal-dialog {
-        max-width: 400px;
-        margin: auto;
-    }
 
-    .custom-modal-content {
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        background-color: #ffffff;
-        overflow: hidden;
-    }
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
 
-    .custom-modal-header {
-        background-color: #007bff;
-        color: white;
-        padding: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+        @media (max-width: 576px) {
+            .payment-card {
+                padding: 20px;
+            }
 
-    .custom-modal-title {
-        margin: 0;
-        font-size: 18px;
-    }
-
-    .custom-close {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 20px;
-        cursor: pointer;
-    }
-
-    .custom-modal-body {
-        padding: 20px;
-        font-size: 16px;
-        color: #333;
-        text-align: center;
-    }
-
-    .custom-modal-footer {
-        padding: 10px;
-        text-align: center;
-        background-color: #f8f9fa;
-    }
-
-    .custom-modal-footer .btn {
-        width: 100px;
-    }
+            .floating-btn,
+            .logout-btn {
+                font-size: 12px;
+                padding: 8px 16px;
+            }
+        }
     </style>
 </head>
 <body>
+    <button class="logout-btn" onclick="window.location.href='/'">Logout</button>
+
     <div class="payment-card">
         <h2>Mobile Payment</h2>
         <div class="form-group">
             <label for="mobileNumber">Mobile Number</label>
             <input type="tel" class="form-control" id="mobileNumber" placeholder="Enter mobile number">
         </div>
-        <button class="btn btn-primary btn-pay" onclick="makePayment()">Pay</button>
+        <button class="btn btn-pay" onclick="makePayment()">Pay</button>
 
         <footer class="footer">
-            <a href="https://wa.me/250725414412?text=Can%20you%20help%20me%20for%20assistance%20on%20how%20can%20I%20make%20payment" target="_blank"><i class="fab fa-whatsapp"></i> Contact via WhatsApp</a>
+            <a href="https://wa.me/250725414412?text=Can%20you%20help%20me%20for%20assistance%20on%20how%20can%20I%20make%20payment" target="_blank">
+                <i class="fab fa-whatsapp"></i> Contact via WhatsApp
+            </a>
         </footer>
     </div>
 
-    <button class="floating-btn" onclick="goToDemoPage()">
-        Open Demo
-    </button>
-
-    <!-- Add this modal structure inside the body -->
-
-
+    <button class="floating-btn" onclick="goToDemoPage()">Open Demo</button>
 
     <script>
         function makePayment() {
             const mobileNumber = document.getElementById('mobileNumber').value;
-    
-            // Validate if the mobile number is entered
+
             if (!mobileNumber) {
                 alert("Please enter a mobile number.");
                 return;
             }
-    
-            // Validate the length of the mobile number
+
             if (mobileNumber.length >= 11) {
                 alert("Mobile number should be less than 11 digits.");
                 return;
             }
-    
-            // Determine the USSD code based on the prefix
+
             let ussdCode = '';
             if (mobileNumber.startsWith('072') || mobileNumber.startsWith('073')) {
                 ussdCode = `*500*1*1*0725414412*30000#`;
@@ -170,19 +154,20 @@
                 alert("Invalid mobile number. It should start with 072, 073, 078, or 079.");
                 return;
             }
-    
-            // Check if the user is on a mobile device
+
             const isMobileDevice = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent);
-    
+
             if (isMobileDevice) {
-                // Encode the USSD code and open the phone app
                 const encodedUssdCode = encodeURIComponent(ussdCode);
                 const ussdLink = `tel:${encodedUssdCode}`;
                 window.location.href = ussdLink;
             } else {
-                // Show an alert with the USSD code for laptop/desktop users
                 alert(`To make a payment, dial the following USSD code on your phone: ${ussdCode}`);
             }
+        }
+
+        function goToDemoPage() {
+            window.location.href = 'demo.html'; // Adjust if needed
         }
     </script>
 </body>
