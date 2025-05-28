@@ -17,7 +17,7 @@ mongoose.connect('mongodb+srv://shimwaolivier7:shimwa2006@aviatorapp.h2x5poa.mon
   .catch(err => console.error('MongoDB connection error:', err));
 
 app.use(session({
-  secret: 'your_secret_key', // Change this in production
+  secret: 'your_secret_key',
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -55,8 +55,6 @@ app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'public', 'si
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
 app.get('/country', (req, res) => res.sendFile(path.join(__dirname, 'public', 'country.html')));
 app.get('/check', (req, res) => res.sendFile(path.join(__dirname, 'public', 'check.html')));
-
-// Betting and payment pages
 app.get('/pricing', (req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'pricing.html')));
 app.get('/payment', (req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'payment.html')));
 app.get('/payment60', (req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'payment60.html')));
@@ -179,7 +177,7 @@ app.get('/api/predict', (req, res) => {
 // Get all users (admin view)
 app.get('/api/users', async (req, res) => {
   try {
-    const users = await User.find({}, 'username email isActivated role mobileNumber paid paidAt');
+    const users = await User.find({}, 'username email isActivated role mobileNumber paid paidAt createdAt');
     res.json(users);
   } catch (error) {
     console.error('Fetch users error:', error);
@@ -289,7 +287,7 @@ app.post('/api/paid', async (req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     user.paid = true;
-    user.paidAt = new Date();
+    user.paidAt = new Date(); // ⬅ Ensure this gets saved
     await user.save();
 
     res.json({ message: 'Payment status updated' });
