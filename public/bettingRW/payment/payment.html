@@ -1,3 +1,17 @@
+<script>
+  const sessionUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+
+  if (!sessionUser) {
+    alert("You must log in first.");
+    window.location.href = "/";
+  } else {
+    // Optional: enforce redirect if somehow activated users shouldn't access country.html
+    // But based on your previous message, we allow both types here.
+    console.log("User is logged in:", sessionUser);
+  }
+</script>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
