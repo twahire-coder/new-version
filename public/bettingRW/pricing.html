@@ -1,3 +1,20 @@
+<script>
+  // Redirect to login page if not logged in
+  document.addEventListener("DOMContentLoaded", () => {
+    const user = localStorage.getItem("loggedInUser");
+    if (!user) {
+      window.location.href = "/"; // Change this to your login page path
+      return;
+    }
+
+    // Existing card update logic
+    const checked = document.querySelector('input[name="duration"]:checked');
+    updateCards(checked ? checked.value : 'weekly');
+  });
+</script>
+
+
+
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -67,7 +84,7 @@
       <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
         30,000 FRW / Week
       </div>
-      <a href="payment/payment.html" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
+      <a href="/payment" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
         PAY
       </a>
     </li>
@@ -84,7 +101,7 @@
       <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
         60,000 FRW
       </div>
-      <a href="payment/payment 60.html" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
+      <a href="/payment60" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
         PAY
       </a>
     </li>
@@ -120,7 +137,7 @@
       <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
         30,000 FRW / Week
       </div>
-      <a href="Payment.html" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
+      <a href="/Payment" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
         PAY
       </a>
     </li>
@@ -139,7 +156,7 @@
       <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
         100,000 FRW / Week
       </div>
-      <a href="payment/payment.html" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
+      <a href="/payment" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
         PAY
       </a>
     </li>
@@ -157,7 +174,7 @@
       <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
         400,000 FRW / Week
       </div>
-      <a href="payment/payment.html" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
+      <a href="/payment" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
         PAY
       </a>
     </li>
@@ -175,7 +192,7 @@
       <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
         40,000 FRW / Week
       </div>
-      <a href="payment/payment.html" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
+      <a href="/payment" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
         PAY
       </a>
     </li>
