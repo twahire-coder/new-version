@@ -1,174 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4078728669571636"
-     crossorigin="anonymous"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile Payment</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <style>
-        body {
-            background: url('https://images.unsplash.com/photo-1556740749-887f6717d7e4?fit=crop&w=1050&q=80') no-repeat center center fixed;
-            background-size: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            position: relative;
-            margin: 0;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mobile Payment</title>
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+  />
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
 
-        .payment-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 30px;
-            max-width: 400px;
-            width: 100%;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            text-align: center;
-        }
+    .container {
+      max-width: 500px;
+      margin: auto;
+    }
 
-        .payment-card h2 {
-            margin-bottom: 25px;
-            font-weight: bold;
-            color: #333;
-        }
+    .payment-card {
+      padding: 30px;
+      border-radius: 15px;
+      background-color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
 
-        .payment-card .form-control {
-            border-radius: 8px;
-        }
+    .payment-card h2 {
+      text-align: center;
+      margin-bottom: 25px;
+    }
 
-        .btn-pay {
-            background-color: #28a745;
-            border: none;
-            border-radius: 8px;
-            padding: 12px;
-            font-size: 16px;
-            margin-top: 15px;
-            width: 100%;
-        }
+    .edit-save-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
 
-        .btn-pay:hover {
-            background-color: #218838;
-        }
+    .btn-pay {
+      width: 100%;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      font-weight: bold;
+    }
 
-        .footer {
-            margin-top: 20px;
-        }
+    .btn-pay:hover {
+      background-color: #0056b3;
+    }
 
-        .footer a {
-            color: #007bff;
-            text-decoration: none;
-        }
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+    }
 
-        .footer a:hover {
-            text-decoration: underline;
-        }
+    .footer a {
+      color: #28a745;
+    }
 
-        .floating-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            border: none;
-            cursor: pointer;
-            z-index: 1000;
-            font-size: 14px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
+    .floating-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: red;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
 
-        .logout-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #dc3545;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 30px;
-            font-size: 14px;
-            cursor: pointer;
-            z-index: 1000;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
+    .logout-btn {
+      margin-top: 15px;
+      width: 100%;
+      background-color: #6c757d;
+      color: white;
+    }
 
-        @media (max-width: 576px) {
-            .payment-card {
-                padding: 20px;
-            }
-
-            .floating-btn,
-            .logout-btn {
-                font-size: 12px;
-                padding: 8px 16px;
-            }
-        }
-    </style>
+    .logout-btn:hover {
+      background-color: #5a6268;
+    }
+  </style>
 </head>
 <body>
-    <button class="logout-btn" onclick="window.location.href='/'">Logout</button>
-
+  <div class="container">
     <div class="payment-card">
-        <h2>Mobile Payment</h2>
-        <div class="form-group">
-            <label for="mobileNumber">Mobile Number</label>
-            <input type="tel" class="form-control" id="mobileNumber" placeholder="Enter mobile number">
-        </div>
-        <button class="btn btn-pay" onclick="makePayment()">Pay</button>
+      <h2>Mobile Payment</h2>
 
-        <footer class="footer">
-            <a href="https://wa.me/250725414412?text=Can%20you%20help%20me%20for%20assistance%20on%20how%20can%20I%20make%20payment" target="_blank">
-                <i class="fab fa-whatsapp"></i> Contact via WhatsApp
-            </a>
-        </footer>
+      <div class="form-group">
+        <label for="mobileNumber">Mobile Number</label>
+        <input
+          type="tel"
+          class="form-control"
+          id="mobileNumber"
+          placeholder="Enter mobile number"
+          maxlength="10"
+        />
+      </div>
+
+      <div class="edit-save-group">
+        <button id="editBtn" class="btn btn-outline-primary" disabled>Edit</button>
+        <button id="saveBtn" class="btn btn-primary" disabled>Save</button>
+      </div>
+
+      <button class="btn btn-pay mb-3" onclick="makePayment()">Pay</button>
+
+      <button class="btn logout-btn" onclick="logout()">Logout</button>
+
+      <footer class="footer mt-4">
+        <a
+          href="https://wa.me/250725414412?text=Can%20you%20help%20me%20for%20assistance%20on%20how%20can%20I%20make%20payment"
+          target="_blank"
+        ><i class="fab fa-whatsapp"></i> Contact via WhatsApp</a>
+      </footer>
     </div>
+  </div>
 
-    <button class="floating-btn" onclick="goToDemoPage()">Open Demo</button>
+  <button class="floating-btn" onclick="goToDemoPage()">Open Demo</button>
 
-    <script>
-        function makePayment() {
-            const mobileNumber = document.getElementById('mobileNumber').value;
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const input = document.getElementById('mobileNumber');
+      const editBtn = document.getElementById('editBtn');
+      const saveBtn = document.getElementById('saveBtn');
 
-            if (!mobileNumber) {
-                alert("Please enter a mobile number.");
-                return;
-            }
+      try {
+        const res = await fetch('/api/mobile', { credentials: 'include' });
+        if (!res.ok) throw new Error('Failed to fetch mobile number');
+        const data = await res.json();
 
-            if (mobileNumber.length >= 11) {
-                alert("Mobile number should be less than 11 digits.");
-                return;
-            }
-
-            let ussdCode = '';
-            if (mobileNumber.startsWith('072') || mobileNumber.startsWith('073')) {
-                ussdCode = `*500*1*1*0725414412*30000#`;
-            } else if (mobileNumber.startsWith('078') || mobileNumber.startsWith('079')) {
-                ussdCode = `*182*1*2*0725414412*30000#`;
-            } else {
-                alert("Invalid mobile number. It should start with 072, 073, 078, or 079.");
-                return;
-            }
-
-            const isMobileDevice = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent);
-
-            if (isMobileDevice) {
-                const encodedUssdCode = encodeURIComponent(ussdCode);
-                const ussdLink = `tel:${encodedUssdCode}`;
-                window.location.href = ussdLink;
-            } else {
-                alert(`To make a payment, dial the following USSD code on your phone: ${ussdCode}`);
-            }
+        if (data.mobileNumber) {
+          input.value = data.mobileNumber;
+          input.disabled = true;
+          editBtn.disabled = false;
+          saveBtn.disabled = true;
+        } else {
+          input.value = '';
+          input.disabled = false;
+          editBtn.disabled = true;
+          saveBtn.disabled = false;
         }
+      } catch (error) {
+        console.error(error);
+        alert('Error loading user data.');
+        input.disabled = false;
+        editBtn.disabled = true;
+        saveBtn.disabled = false;
+      }
+    });
 
-        function goToDemoPage() {
-            window.location.href = 'demo.html'; // Adjust if needed
-        }
-    </script>
+    document.getElementById('editBtn').addEventListener('click', () => {
+      const input = document.getElementById('mobileNumber');
+      input.disabled = false;
+      input.focus();
+      document.getElementById('saveBtn').disabled = false;
+      document.getElementById('editBtn').disabled = true;
+    });
+
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+      const input = document.getElementById('mobileNumber');
+      const mobileNumber = input.value.trim();
+
+      if (!mobileNumber) {
+        alert('Please enter a mobile number.');
+        return;
+      }
+      if (mobileNumber.length > 10) {
+        alert('Mobile number should be 10 digits or less.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/mobile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ mobileNumber }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to save mobile number');
+
+        alert('Mobile number updated successfully.');
+        input.disabled = true;
+        document.getElementById('editBtn').disabled = false;
+        document.getElementById('saveBtn').disabled = true;
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+
+    function makePayment() {
+      const mobileNumber = document.getElementById('mobileNumber').value;
+
+      if (!mobileNumber) {
+        alert('Please enter a mobile number.');
+        return;
+      }
+
+      if (mobileNumber.length > 10) {
+        alert('Mobile number should be 10 digits or less.');
+        return;
+      }
+
+      let ussdCode = '';
+      if (mobileNumber.startsWith('072') || mobileNumber.startsWith('073')) {
+        ussdCode = `*500*1*1*0725414412*30000#`;
+      } else if (mobileNumber.startsWith('078') || mobileNumber.startsWith('079')) {
+        ussdCode = `*182*1*2*0725414412*30000#`;
+      } else {
+        alert('Invalid mobile number. It should start with 072, 073, 078, or 079.');
+        return;
+      }
+
+      const isMobileDevice = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(
+        navigator.userAgent
+      );
+
+      if (isMobileDevice) {
+        const encodedUssdCode = encodeURIComponent(ussdCode);
+        const ussdLink = `tel:${encodedUssdCode}`;
+        window.location.href = ussdLink;
+      } else {
+        alert(`To make a payment, dial the following USSD code on your phone: ${ussdCode}`);
+      }
+    }
+
+    function goToDemoPage() {
+      window.location.href = 'paid.html';
+    }
+
+    function logout() {
+      window.location.href = '/';
+    }
+  </script>
 </body>
 </html>
