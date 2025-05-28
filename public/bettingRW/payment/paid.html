@@ -1,224 +1,223 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4078728669571636"
-     crossorigin="anonymous"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Really Predictor</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #8B0000; /* Red background */
-            margin: 0;
-            color: white;
-        }
-
-        .container {
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 350px;
-        }
-
-        h2 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        #prediction-container {
-            position: relative;
-            margin-bottom: 30px;
-        }
-
-        #prediction {
-            font-size: 2.5em;
-            color: #007bff;
-            font-weight: bold;
-        }
-
-        .circle-icon {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 4px solid #007bff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.2em;
-            color: #007bff;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .loading {
-            display: none;
-            margin-top: 20px;
-        }
-
-        .loading img {
-            width: 50px;
-            height: 50px;
-            animation: rotate 1s linear infinite;
-        }
-
-        @keyframes rotate {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        #next-button {
-            background-color: #8B0000; /* Red button */
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-            width: 100%;
-        }
-
-        .footer-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-
-        .footer-bar button {
-            background-color: #8B0000; /* Red button */
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-        }
-
-        .footer-bar .timer {
-            font-size: 1em;
-            color: white;
-        }
-        .whatsapp-button {
-    color: white !important; /* White text */
-    text-decoration: none !important; /* No underline */
-    border: none; /* remove default border */
-    padding: 10px 20px; /* Adjust padding as needed */
-    border-radius: 5px; /* Adjust roundness */
-    font-size: 16px; /* Adjust font size */
-    transition: background-color 0.3s ease; /* Smooth hover effect */
-}
-
-.whatsapp-button:hover {
-    background-color: #1DA851; /* Darker WhatsApp Green on hover */
-}
-
-/* Responsive Design (adjust breakpoints as needed) */
-@media (max-width: 768px) { /* Example breakpoint */
-    .whatsapp-button {
-        font-size: 14px; /* Smaller font on smaller screens */
-        padding: 8px 16px; /* Adjust padding */
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4078728669571636"
+    crossorigin="anonymous"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Really Predictor</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #8B0000, #330000);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
     }
-}
 
-@media (max-width: 500px) { /* Example breakpoint */
-    .whatsapp-button {
-        font-size: 12px; /* Even smaller font */
-         padding: 6px 12px; /* Adjust padding */
+    .container {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      position: relative;
     }
-}
-    </style>
+
+    h2 {
+      color: #fff;
+      text-align: center;
+      margin-bottom: 25px;
+      font-weight: 600;
+    }
+
+    #prediction {
+      font-size: 2.8em;
+      font-weight: bold;
+      color: #0dcaf0;
+    }
+
+    .circle-icon {
+      margin: 20px auto;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 4px solid #0dcaf0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 1.3em;
+      color: #0dcaf0;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .loading img {
+      display: block;
+      margin: 20px auto;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #next-button {
+      width: 100%;
+      background-color: #8B0000;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    #next-button:hover {
+      background-color: #a30000;
+    }
+
+    .footer-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .footer-bar button {
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .footer-bar .btn-danger {
+      background-color: #8B0000;
+      color: white;
+    }
+
+    .footer-bar .btn-success {
+      background-color: #25D366;
+      color: white;
+    }
+
+    .footer-bar .timer {
+      font-weight: bold;
+      color: white;
+    }
+
+    .logout-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background-color: transparent;
+      border: 2px solid #fff;
+      color: #fff;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: #fff;
+      color: #8B0000;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 25px 20px;
+      }
+
+      .logout-btn {
+        padding: 4px 10px;
+        font-size: 0.8em;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Demo Aviator Predictor</h2>
-        <div id="prediction-container">
-            <div id="prediction">--</div>
-            <div class="circle-icon" id="odds-display"></div>
-        </div>
-        <div class="loading">
-            <img src="loading.gif" alt="Loading...">
-        </div>
-        <button id="next-button" class="btn btn-primary">Next Odd</button>
-    </div>
 
-    <div class="footer-bar">
-        <button class="btn btn-danger" onclick="window.location.href='payment.html'">BACK</button>
-        <div class="timer" id="footer-timer">53:17</div>
-        <button class="btn btn-success whatsapp-button" onclick="window.open('https://wa.me/250725414412', '_blank')">Chat</button>
-    </div>
+  <div class="container">
+    <button class="logout-btn" onclick="logout()">Logout</button>
+    <h2>Demo Aviator Predictor</h2>
+    <div id="prediction">--</div>
+    <div class="circle-icon" id="odds-display">--</div>
+    <div class="loading"><img src="loading.gif" alt="Loading..."></div>
+    <button id="next-button">Next Odd</button>
+  </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        const predictionElement = document.getElementById('prediction');
-        const loadingElement = document.querySelector('.loading');
-        const circleIcon = document.getElementById('odds-display');
-        const nextButton = document.getElementById('next-button');
-        const footerTimer = document.getElementById('footer-timer');
+  <div class="footer-bar">
+    <button class="btn btn-danger" onclick="window.location.href='payment.html'">BACK</button>
+    <div class="timer" id="footer-timer">53:17</div>
+    <button class="btn btn-success" onclick="window.open('https://wa.me/250725414412', '_blank')">Chat</button>
+  </div>
 
-        let currentOdd = 1.00;
-        let timeLeft = 53 * 60 + 17;
+  <script>
+    const predictionElement = document.getElementById('prediction');
+    const circleIcon = document.getElementById('odds-display');
+    const loadingElement = document.querySelector('.loading');
+    const footerTimer = document.getElementById('footer-timer');
+    const nextButton = document.getElementById('next-button');
 
-        function generatePrediction() {
-            loadingElement.style.display = 'block';
-            circleIcon.style.opacity = 0;
+    let currentOdd = 1.00;
+    let timeLeft = 53 * 60 + 17;
 
-            setTimeout(() => {
-                let prediction = Math.random() * 10;
-                prediction = parseFloat(prediction.toFixed(2));
+    function generatePrediction() {
+      loadingElement.style.display = 'block';
+      predictionElement.textContent = "--";
+      circleIcon.textContent = "--";
 
-                currentOdd = parseFloat((Math.random() *3 ).toFixed(2));
+      setTimeout(() => {
+        let prediction = (Math.random() * 10).toFixed(2);
+        currentOdd = (Math.random() * 3).toFixed(2);
 
-                predictionElement.textContent = prediction;
-                circleIcon.textContent = currentOdd + "X";
-                
+        predictionElement.textContent = prediction;
+        circleIcon.textContent = `${currentOdd}X`;
 
-                loadingElement.style.display = 'none';
-            }, 2000);
-        }
+        loadingElement.style.display = 'none';
+      }, 2000);
+    }
 
-        generatePrediction();
-        setInterval(generatePrediction, 5000);
+    function updateFooterTimer() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      footerTimer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      if (timeLeft > 0) timeLeft--;
+    }
 
-        nextButton.addEventListener('click', () => {
-            alert("Moving to the next odd...");
-        });
+    function logout() {
+      window.location.href = "/";
+    }
 
-        function updateFooterTimer() {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            footerTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            timeLeft--;
-            if (timeLeft < 0) {
-                timeLeft = 0;
-                clearInterval(timerInterval);
-            }
-        }
+    generatePrediction();
+    setInterval(generatePrediction, 5000);
+    updateFooterTimer();
+    const timerInterval = setInterval(updateFooterTimer, 1000);
 
-        updateFooterTimer();
-        const timerInterval = setInterval(updateFooterTimer, 1000);
-    </script>
+    nextButton.addEventListener('click', () => {
+      alert("Next odd will appear shortly...");
+    });
+  </script>
 </body>
 </html>
