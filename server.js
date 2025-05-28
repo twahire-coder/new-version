@@ -52,12 +52,15 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+// Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
+
 app.get('/signup', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'signup.html'));
 });
+
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
@@ -70,20 +73,25 @@ app.get('/check', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'check.html'));
 });
 
+// Betting and payment pages
 app.get('/pricing', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public','bettingRw' ,'pricing.html'));
+  res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'pricing.html'));
 });
+
 app.get('/payment', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public','bettingRw' ,'payment','payment.html'));
+  res.sendFile(path.join(__dirname, 'public', 'bettingRw', 'payment', 'payment.html'));
 });
+
 app.get('/payment60', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public','bettingRw' ,'payment','payment 60.html'));
+  res.sendFile(path.join(__dirname, 'public', 'bettingRw', 'payment', 'payment60.html'));
 });
+
 app.get('/payment100', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public','bettingRw' ,'payment','payment 100.html'));
+  res.sendFile(path.join(__dirname, 'public', 'bettingRw', 'payment', 'payment100.html'));
 });
+
 app.get('/demo', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public','bettingRw' ,'payment','paid.html'));
+  res.sendFile(path.join(__dirname, 'public', 'bettingRw', 'payment', 'paid.html'));
 });
 // Signup endpoint
 app.post('/api/signup', async (req, res) => {
