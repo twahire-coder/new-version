@@ -1,241 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mobile Payment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link
     rel="stylesheet"
-    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
   />
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
-  />
-  <style>
-    body {
-      background-color: #f8f9fa;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 500px;
-      margin: auto;
-    }
-
-    .payment-card {
-      padding: 30px;
-      border-radius: 15px;
-      background-color: #fff;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .payment-card h2 {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-
-    .edit-save-group {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .btn-pay {
-      width: 100%;
-      background-color: #007bff;
-      border: none;
-      color: white;
-      font-weight: bold;
-    }
-
-    .btn-pay:hover {
-      background-color: #0056b3;
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .footer a {
-      color: #28a745;
-    }
-
-    .floating-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: red;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 5px;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
-    }
-
-    .logout-top-btn {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background-color: #6c757d;
-      color: white;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      z-index: 1001;
-    }
-
-    .logout-top-btn:hover {
-      background-color: #5a6268;
-    }
-  </style>
 </head>
-<body>
-  <!-- Logout button at top-left corner -->
-  <button class="logout-top-btn" onclick="logout()">Logout</button>
+<body
+  class="bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen flex items-center justify-center px-4 relative"
+>
+  <!-- Logout Button -->
+  <button
+    onclick="logout()"
+    class="absolute top-4 right-4 text-red-600 hover:text-red-800 font-medium text-sm z-50 bg-white px-3 py-1 rounded-md shadow"
+  >
+    <i class="fas fa-sign-out-alt mr-1"></i> Logout
+  </button>
 
-  <!-- Check for session -->
-  <script>
-    const sessionUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+  <!-- Main Card -->
+  <div
+    class="bg-white/80 backdrop-blur-md rounded-xl shadow-lg w-full max-w-md p-6 md:p-8 space-y-5"
+  >
+    <h2 class="text-2xl font-bold text-blue-700 text-center">Mobile Payment</h2>
 
-    if (!sessionUser) {
-      alert("You must log in first.");
-      window.location.href = "/";
-    } else {
-      console.log("User is logged in:", sessionUser);
-    }
-  </script>
-
-  <div class="container">
-    <div class="payment-card">
-      <h2>Mobile Payment</h2>
-
-      <div class="form-group">
-        <label for="mobileNumber">Mobile Number</label>
-        <input
-          type="tel"
-          class="form-control"
-          id="mobileNumber"
-          placeholder="Enter mobile number"
-          maxlength="10"
-        />
-      </div>
-
-      <div class="edit-save-group">
-        <button id="editBtn" class="btn btn-outline-primary" disabled>Edit</button>
-        <button id="saveBtn" class="btn btn-primary" disabled>Save</button>
-      </div>
-
-      <button class="btn btn-pay mb-3" onclick="makePayment()">Pay</button>
-
-      <footer class="footer mt-4">
-        <a
-          href="https://wa.me/250725414412?text=Can%20you%20help%20me%20for%20assistance%20on%20how%20can%20I%20make%20payment"
-          target="_blank"
-        ><i class="fab fa-whatsapp"></i> Contact via WhatsApp</a>
-      </footer>
+    <div>
+      <label
+        for="mobileNumber"
+        class="block text-gray-700 font-semibold mb-1"
+        >Mobile Number</label
+      >
+      <input
+        type="tel"
+        id="mobileNumber"
+        placeholder="Enter mobile number"
+        maxlength="10"
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
     </div>
+
+    <button
+      onclick="makePayment()"
+      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md transition duration-200"
+    >
+      Pay
+    </button>
+
+    <footer class="text-center text-sm text-green-600">
+      <a
+        href="https://wa.me/250725414412?text=Can%20you%20help%20me%20for%20assistance%20on%20how%20can%20I%20make%20payment"
+        target="_blank"
+        class="inline-flex items-center gap-2 hover:underline"
+      >
+        <i class="fab fa-whatsapp"></i> Contact via WhatsApp
+      </a>
+    </footer>
   </div>
 
-  <button class="floating-btn" onclick="goToDemoPage()">Open Demo</button>
+  <button
+    onclick="goToDemoPage()"
+    class="fixed bottom-5 right-5 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full shadow-md z-50 transition duration-200 text-sm"
+  >
+    Open Demo
+  </button>
 
   <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      const input = document.getElementById('mobileNumber');
-      const editBtn = document.getElementById('editBtn');
-      const saveBtn = document.getElementById('saveBtn');
+    const mobileInput = document.getElementById("mobileNumber");
 
+    // Fetch logged-in user's mobile number on load
+    async function loadMobileNumber() {
       try {
-        const res = await fetch('/api/mobile', { credentials: 'include' });
-        if (!res.ok) throw new Error('Failed to fetch mobile number');
-        const data = await res.json();
-
-        if (data.mobileNumber) {
-          input.value = data.mobileNumber;
-          input.disabled = true;
-          editBtn.disabled = false;
-          saveBtn.disabled = true;
-        } else {
-          input.value = '';
-          input.disabled = false;
-          editBtn.disabled = true;
-          saveBtn.disabled = false;
-        }
-      } catch (error) {
-        console.error(error);
-        alert('Error loading user data.');
-        input.disabled = false;
-        editBtn.disabled = true;
-        saveBtn.disabled = false;
-      }
-    });
-
-    document.getElementById('editBtn').addEventListener('click', () => {
-      const input = document.getElementById('mobileNumber');
-      input.disabled = false;
-      input.focus();
-      document.getElementById('saveBtn').disabled = false;
-      document.getElementById('editBtn').disabled = true;
-    });
-
-    document.getElementById('saveBtn').addEventListener('click', async () => {
-      const input = document.getElementById('mobileNumber');
-      const mobileNumber = input.value.trim();
-
-      if (!mobileNumber) {
-        alert('Please enter a mobile number.');
-        return;
-      }
-      if (mobileNumber.length > 10) {
-        alert('Mobile number should be 10 digits or less.');
-        return;
-      }
-
-      try {
-        const res = await fetch('/api/mobile', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ mobileNumber }),
+        const res = await fetch("/api/mobile", {
+          method: "GET",
+          credentials: "include", // Important for session cookies
         });
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to save mobile number');
+        if (res.status === 401) {
+          alert("You are not logged in. Redirecting to login page.");
+          window.location.href = "/";
+          return;
+        }
 
-        alert('Mobile number updated successfully.');
-        input.disabled = true;
-        document.getElementById('editBtn').disabled = false;
-        document.getElementById('saveBtn').disabled = true;
+        if (!res.ok) throw new Error("Failed to fetch mobile number");
+
+        const data = await res.json();
+        if (data.mobileNumber) {
+          mobileInput.value = data.mobileNumber;
+        }
       } catch (err) {
-        alert(err.message);
+        console.error(err);
+        alert("Error loading your mobile number.");
       }
+    }
+
+    // Auto-save mobile number to backend as user types (debounced)
+    let saveTimeout;
+    mobileInput.addEventListener("input", () => {
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(saveMobileNumber, 700); // debounce 700ms
     });
 
+    async function saveMobileNumber() {
+      const number = mobileInput.value.trim();
+      // Optionally, validate here before sending
+      try {
+        const res = await fetch("/api/mobile", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ mobileNumber: number }),
+        });
+
+        if (!res.ok) throw new Error("Failed to save mobile number");
+      } catch (err) {
+        console.error("Save mobile number error:", err);
+      }
+    }
+
     function makePayment() {
-      const mobileNumber = document.getElementById('mobileNumber').value;
+      const mobileNumber = mobileInput.value.trim();
 
       if (!mobileNumber) {
-        alert('Please enter a mobile number.');
+        alert("Please enter a mobile number.");
         return;
       }
 
       if (mobileNumber.length > 10) {
-        alert('Mobile number should be 10 digits or less.');
+        alert("Mobile number should be 10 digits or less.");
         return;
       }
 
-      let ussdCode = '';
-      if (mobileNumber.startsWith('072') || mobileNumber.startsWith('073')) {
-        ussdCode = `*500*1*1*0725414412*30000#`;
-      } else if (mobileNumber.startsWith('078') || mobileNumber.startsWith('079')) {
-        ussdCode = `*182*1*2*0725414412*30000#`;
+      let ussdCode = "";
+      if (mobileNumber.startsWith("072") || mobileNumber.startsWith("073")) {
+        ussdCode = "*500*1*1*0725414412*30000#";
+      } else if (
+        mobileNumber.startsWith("078") ||
+        mobileNumber.startsWith("079")
+      ) {
+        ussdCode = "*182*1*2*0725414412*30000#";
       } else {
-        alert('Invalid mobile number. It should start with 072, 073, 078, or 079.');
+        alert(
+          "Invalid mobile number. It should start with 072, 073, 078, or 079."
+        );
         return;
       }
 
@@ -244,21 +155,33 @@
       );
 
       if (isMobileDevice) {
-        const encodedUssdCode = encodeURIComponent(ussdCode);
-        const ussdLink = `tel:${encodedUssdCode}`;
-        window.location.href = ussdLink;
+        window.location.href = `tel:${encodeURIComponent(ussdCode)}`;
       } else {
-        alert(`To make a payment, dial the following USSD code on your phone: ${ussdCode}`);
+        alert(`To make a payment, dial this code on your phone: ${ussdCode}`);
       }
     }
 
     function goToDemoPage() {
-      window.location.href = '/demo';
+      window.location.href = "/demo";
     }
 
     function logout() {
-      window.location.href = '/';
+      fetch("/api/logout", {
+        method: "POST",
+        credentials: "include",
+      })
+        .then((res) => {
+          if (res.ok) {
+            window.location.href = "/";
+          } else {
+            alert("Logout failed");
+          }
+        })
+        .catch(() => alert("Logout failed"));
     }
+
+    // Load mobile number on page load
+    window.addEventListener("DOMContentLoaded", loadMobileNumber);
   </script>
 </body>
 </html>
