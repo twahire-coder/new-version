@@ -14,7 +14,7 @@
     </button>
   </header>
 
-  <main class="max-w-5xl mx-auto mt-8 p-4 bg-red-700 rounded-lg shadow-lg">
+  <main class="max-w-7xl mx-auto mt-8 p-4 bg-red-700 rounded-lg shadow-lg">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-xl font-semibold">Registered Users</h2>
       <button id="viewReportBtn" class="bg-white text-red-900 px-4 py-2 font-semibold rounded hover:bg-red-100 transition">
@@ -38,6 +38,7 @@
           <th class="border border-red-600 px-4 py-2">Email</th>
           <th class="border border-red-600 px-4 py-2">Activated</th>
           <th class="border border-red-600 px-4 py-2">Role</th>
+          <th class="border border-red-600 px-4 py-2">Last Paid Time</th>
           <th class="border border-red-600 px-4 py-2">Actions</th>
         </tr>
       </thead>
@@ -75,6 +76,16 @@
     const reportProgress = document.getElementById('reportProgress');
 
     let allUsers = [];
+
+    function formatDateTime(dateString) {
+      if (!dateString) return '-';
+      const d = new Date(dateString);
+      if (isNaN(d)) return '-';
+      return d.toLocaleString(undefined, { 
+        year: 'numeric', month: 'short', day: 'numeric', 
+        hour: '2-digit', minute: '2-digit', second: '2-digit' 
+      });
+    }
 
     async function loadUsers() {
       try {
@@ -114,6 +125,7 @@
           <td class="border border-red-600 px-4 py-2">${user.email}</td>
           <td class="border border-red-600 px-4 py-2 text-center">${user.isActivated ? 'Yes' : 'No'}</td>
           <td class="border border-red-600 px-4 py-2 text-center">${user.role}</td>
+          <td class="border border-red-600 px-4 py-2 text-center">${formatDateTime(user.lastPaidAt)}</td>
           <td class="border border-red-600 px-4 py-2 text-center">${actions}</td>
         `;
 
@@ -192,4 +204,3 @@
   </script>
 </body>
 </html>
-
