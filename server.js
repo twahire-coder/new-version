@@ -25,87 +25,52 @@ app.use(session({
   }
 }));
 
-
 app.use(cors({
-  origin: 'http://localhost:3000', // or whatever your frontend origin is
+  origin: 'http://localhost:3000',
   credentials: true
 }));
 
-// Middleware
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Serve static HTML files from 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 
-// User Schema with mobileNumber
+// User Schema
 const userSchema = new mongoose.Schema({
-  username: { type: String },
+  username: String,
   email: { type: String, required: true, unique: true },
-  password: { type: String },
+  password: String,
   isActivated: { type: Boolean, default: false },
   role: { type: String, default: 'user' },
   sessionStart: { type: Date },
   mobileNumber: { type: String, default: '' }
-});
+}, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
 
-// Routes
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
-
-app.get('/signup', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'signup.html'));
-});
-
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
-});
-
-app.get('/country', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'country.html'));
-});
-
-app.get('/check', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'check.html'));
-});
+// HTML Routes
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
+app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'public', 'signup.html')));
+app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
+app.get('/country', (req, res) => res.sendFile(path.join(__dirname, 'public', 'country.html')));
+app.get('/check', (req, res) => res.sendFile(path.join(__dirname, 'public', 'check.html')));
 
 // Betting and payment pages
-app.get('/pricing', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'pricing.html'));
-});
+app.get('/pricing', (req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'pricing.html')));
+app.get('/payment', (req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'payment.html')));
+app.get('/payment60', (req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'payment60.html')));
+app.get('/payment100', (req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'payment100.html')));
+app.get('/demo', (req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'paid.html')));
 
-app.get('/payment', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'bettingRW',  'payment.html'));
-});
-
-app.get('/payment60', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'payment60.html'));
-});
-
-app.get('/payment100', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'bettingRW',  'payment100.html'));
-});
-
-app.get('/demo', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'bettingRW',  'paid.html'));
-});
 // Signup endpoint
 app.post('/api/signup', async (req, res) => {
   const { username, email, password } = req.body;
-
   if (!username || !email || !password) {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
   try {
     const existing = await User.findOne({ email: email.toLowerCase() });
-    if (existing) {
-      return res.status(400).json({ error: 'User already exists' });
-    }
+    if (existing) return res.status(400).json({ error: 'User already exists' });
 
     await User.create({
       username,
@@ -129,11 +94,8 @@ app.post('/api/login', async (req, res) => {
   const email = req.body.email?.trim().toLowerCase();
   const password = req.body.password?.trim();
 
-  if (!email || !password) {
-    return res.status(400).json({ error: 'All fields are required' });
-  }
+  if (!email || !password) return res.status(400).json({ error: 'All fields are required' });
 
-  // Hardcoded admin
   if (email === 'admin@123.com' && password === 'admin.123') {
     req.session.user = { email, username: 'Admin', role: 'admin', isActivated: true };
     return res.json(req.session.user);
@@ -142,11 +104,8 @@ app.post('/api/login', async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ error: 'User not found' });
-
     if (user.password !== password) return res.status(401).json({ error: 'Invalid credentials' });
 
-    // **Do NOT block login here if not activated**
-    // Instead, send user info with isActivated flag
     req.session.user = {
       email: user.email,
       username: user.username,
@@ -161,8 +120,7 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-
-// Session check endpoint
+// Session check
 app.post('/api/session-check', async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: 'Email required' });
@@ -197,6 +155,34 @@ app.post('/api/session-check', async (req, res) => {
     res.status(500).json({ error: 'Internal server error during session check' });
   }
 });
+
+// Logout
+app.post('/api/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) return res.status(500).json({ error: 'Logout failed' });
+    res.clearCookie('connect.sid');
+    res.json({ message: 'Logged out successfully' });
+  });
+});
+
+// Prediction
+app.get('/api/predict', (req, res) => {
+  const base = 1.0;
+  const random = parseFloat((base + Math.random() * 2).toFixed(2));
+  res.json({ prediction: `${random}X` });
+});
+
+// Get all users (with mobile numbers)
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await User.find({}, 'username email isActivated role mobileNumber');
+    res.json(users);
+  } catch (error) {
+    console.error('Fetch users error:', error);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
 // Delete user
 app.delete('/api/users/:id', async (req, res) => {
   try {
@@ -208,7 +194,23 @@ app.delete('/api/users/:id', async (req, res) => {
   }
 });
 
-// Monthly Report
+// Toggle activation
+app.patch('/api/users/:id/toggle', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (user.role === 'admin') return res.status(403).json({ error: 'Cannot modify admin user' });
+
+    user.isActivated = !user.isActivated;
+    await user.save();
+    res.json({ message: 'User activation status updated', user });
+  } catch (error) {
+    console.error('Toggle user activation error:', error);
+    res.status(500).json({ error: 'Failed to update user' });
+  }
+});
+
+// Monthly report
 app.get('/api/users/report/monthly', async (req, res) => {
   try {
     const now = new Date();
@@ -233,59 +235,8 @@ app.get('/api/users/report/monthly', async (req, res) => {
     res.status(500).send('Failed to generate report');
   }
 });
-// Logout endpoint
-app.post('/api/logout', (req, res) => {
-  req.session.destroy(err => {
-    if (err) {
-      return res.status(500).json({ error: 'Logout failed' });
-    }
-    res.clearCookie('connect.sid');
-    res.json({ message: 'Logged out successfully' });
-  });
-});
 
-// Prediction endpoint
-app.get('/api/predict', (req, res) => {
-  const base = 1.0;
-  const random = parseFloat((base + Math.random() * 2).toFixed(2));
-  res.json({ prediction: `${random}X` });
-});
-
-// Get all users (Admin only)
-app.get('/api/users', async (req, res) => {
-  try {
-    const users = await User.find({}, 'username email isActivated role');
-    res.json(users);
-  } catch (error) {
-    console.error('Fetch users error:', error);
-    res.status(500).json({ error: 'Failed to fetch users' });
-  }
-});
-
-// Toggle user activation (Admin only)
-app.patch('/api/users/:id/toggle', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    if (user.role === 'admin') {
-      return res.status(403).json({ error: 'Cannot modify admin user' });
-    }
-
-    user.isActivated = !user.isActivated;
-    await user.save();
-
-    res.json({ message: 'User activation status updated', user });
-  } catch (error) {
-    console.error('Toggle user activation error:', error);
-    res.status(500).json({ error: 'Failed to update user' });
-  }
-});
-
-// --- New: Get logged-in user's mobile number ---
+// Get logged-in user's mobile number
 app.get('/api/mobile', async (req, res) => {
   if (!req.session.user || !req.session.user.email) {
     return res.status(401).json({ error: 'Unauthorized' });
@@ -294,7 +245,6 @@ app.get('/api/mobile', async (req, res) => {
   try {
     const user = await User.findOne({ email: req.session.user.email });
     if (!user) return res.status(404).json({ error: 'User not found' });
-
     res.json({ mobileNumber: user.mobileNumber || '' });
   } catch (error) {
     console.error('Get mobile number error:', error);
@@ -302,7 +252,7 @@ app.get('/api/mobile', async (req, res) => {
   }
 });
 
-// --- New: Update logged-in user's mobile number ---
+// Update logged-in user's mobile number
 app.post('/api/mobile', async (req, res) => {
   if (!req.session.user || !req.session.user.email) {
     return res.status(401).json({ error: 'Unauthorized' });
@@ -317,7 +267,6 @@ app.post('/api/mobile', async (req, res) => {
 
     user.mobileNumber = mobileNumber;
     await user.save();
-
     res.json({ message: 'Mobile number updated' });
   } catch (error) {
     console.error('Update mobile number error:', error);
@@ -325,7 +274,6 @@ app.post('/api/mobile', async (req, res) => {
   }
 });
 
-// Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
