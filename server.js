@@ -17,7 +17,7 @@ mongoose.connect('mongodb+srv://shimwaolivier7:shimwa2006@aviatorapp.h2x5poa.mon
   .catch(err => console.error('MongoDB connection error:', err));
 
 app.use(session({
-  secret: 'your_secret_key', // Change to a secure key in production
+  secret: 'your_secret_key', // Change this in production
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -42,7 +42,9 @@ const userSchema = new mongoose.Schema({
   isActivated: { type: Boolean, default: false },
   role: { type: String, default: 'user' },
   sessionStart: { type: Date },
-  mobileNumber: { type: String, default: '' }
+  mobileNumber: { type: String, default: '' },
+  paid: { type: Boolean, default: false },
+  paidAt: { type: Date, default: null }
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
@@ -61,7 +63,7 @@ app.get('/payment60', (req, res) => res.sendFile(path.join(__dirname, 'public', 
 app.get('/payment100', (req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'payment100.html')));
 app.get('/demo', (req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'paid.html')));
 
-// Signup endpoint
+// Signup
 app.post('/api/signup', async (req, res) => {
   const { username, email, password } = req.body;
   if (!username || !email || !password) {
@@ -79,7 +81,9 @@ app.post('/api/signup', async (req, res) => {
       isActivated: false,
       role: 'user',
       sessionStart: new Date(),
-      mobileNumber: ''
+      mobileNumber: '',
+      paid: false,
+      paidAt: null
     });
 
     res.status(201).json({ message: 'Signup successful' });
@@ -89,7 +93,7 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
-// Login endpoint
+// Login
 app.post('/api/login', async (req, res) => {
   const email = req.body.email?.trim().toLowerCase();
   const password = req.body.password?.trim();
@@ -172,10 +176,10 @@ app.get('/api/predict', (req, res) => {
   res.json({ prediction: `${random}X` });
 });
 
-// Get all users (with mobile numbers)
+// Get all users (admin view)
 app.get('/api/users', async (req, res) => {
   try {
-    const users = await User.find({}, 'username email isActivated role mobileNumber');
+    const users = await User.find({}, 'username email isActivated role mobileNumber paid paidAt');
     res.json(users);
   } catch (error) {
     console.error('Fetch users error:', error);
@@ -236,7 +240,7 @@ app.get('/api/users/report/monthly', async (req, res) => {
   }
 });
 
-// Get logged-in user's mobile number
+// Get user's mobile number
 app.get('/api/mobile', async (req, res) => {
   if (!req.session.user || !req.session.user.email) {
     return res.status(401).json({ error: 'Unauthorized' });
@@ -252,7 +256,7 @@ app.get('/api/mobile', async (req, res) => {
   }
 });
 
-// Update logged-in user's mobile number
+// Update mobile number
 app.post('/api/mobile', async (req, res) => {
   if (!req.session.user || !req.session.user.email) {
     return res.status(401).json({ error: 'Unauthorized' });
@@ -270,6 +274,27 @@ app.post('/api/mobile', async (req, res) => {
     res.json({ message: 'Mobile number updated' });
   } catch (error) {
     console.error('Update mobile number error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Mark user as paid and store timestamp
+app.post('/api/paid', async (req, res) => {
+  if (!req.session.user || !req.session.user.email) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    const user = await User.findOne({ email: req.session.user.email });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    user.paid = true;
+    user.paidAt = new Date();
+    await user.save();
+
+    res.json({ message: 'Payment status updated' });
+  } catch (error) {
+    console.error('Update paid status error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
