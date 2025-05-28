@@ -79,19 +79,19 @@ app.get('/pricing', (req, res) => {
 });
 
 app.get('/payment', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'bettingRw', 'payment', 'payment.html'));
+  res.sendFile(path.join(__dirname, 'public', 'bettingRw',  'payment.html'));
 });
 
 app.get('/payment60', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'bettingRw', 'payment', 'payment60.html'));
+  res.sendFile(path.join(__dirname, 'public', 'bettingRw', 'payment60.html'));
 });
 
 app.get('/payment100', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'bettingRw', 'payment', 'payment100.html'));
+  res.sendFile(path.join(__dirname, 'public', 'bettingRw',  'payment100.html'));
 });
 
 app.get('/demo', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'bettingRw', 'payment', 'paid.html'));
+  res.sendFile(path.join(__dirname, 'public', 'bettingRw',  'paid.html'));
 });
 // Signup endpoint
 app.post('/api/signup', async (req, res) => {
