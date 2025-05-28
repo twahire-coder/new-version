@@ -1,16 +1,14 @@
 <script>
-  // Redirect to login page if not logged in
-  document.addEventListener("DOMContentLoaded", () => {
-    const user = localStorage.getItem("loggedInUser");
-    if (!user) {
-      window.location.href = "/"; // Change this to your login page path
-      return;
-    }
+  const sessionUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
 
-    // Existing card update logic
-    const checked = document.querySelector('input[name="duration"]:checked');
-    updateCards(checked ? checked.value : 'weekly');
-  });
+  if (!sessionUser) {
+    alert("You must log in first.");
+    window.location.href = "/";
+  } else {
+    // Optional: enforce redirect if somehow activated users shouldn't access country.html
+    // But based on your previous message, we allow both types here.
+    console.log("User is logged in:", sessionUser);
+  }
 </script>
 
 
