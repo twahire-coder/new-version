@@ -1,221 +1,331 @@
-<script>
-  const sessionUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const path = require('path');
+const session = require('express-session');
 
-  if (!sessionUser) {
-    alert("You must log in first.");
-    window.location.href = "/";
-  } else {
-    // Optional: enforce redirect if somehow activated users shouldn't access country.html
-    // But based on your previous message, we allow both types here.
-    console.log("User is logged in:", sessionUser);
+const app = express();
+const PORT = 3000;
+
+// MongoDB Connection
+mongoose.connect('mongodb+srv://shimwaolivier7:shimwa2006@aviatorapp.h2x5poa.mongodb.net/aviator', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+  .then(() => console.log('MongoDB connected successfully'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+app.use(session({
+  secret: 'your_secret_key', // Change to a secure key in production
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 6 * 60 * 60 * 1000 // 6 hours
   }
-</script>
+}));
 
 
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Price Trial - Tailwind Version</title>
+app.use(cors({
+  origin: 'http://localhost:3000', // or whatever your frontend origin is
+  credentials: true
+}));
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+// Middleware
 
-  <!-- Google Fonts Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-  <style>
-    :root {
-      --primary-dark-blue: #1a2a3a;
-      --primary-green: #39ff14;
+// Serve static HTML files from 'public'
+app.use(express.static(path.join(__dirname, 'public')));
+
+// User Schema with mobileNumber
+const userSchema = new mongoose.Schema({
+  username: { type: String },
+  email: { type: String, required: true, unique: true },
+  password: { type: String },
+  isActivated: { type: Boolean, default: false },
+  role: { type: String, default: 'user' },
+  sessionStart: { type: Date },
+  mobileNumber: { type: String, default: '' }
+});
+
+const User = mongoose.model('User', userSchema);
+
+// Routes
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+app.get('/signup', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'signup.html'));
+});
+
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+app.get('/country', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'country.html'));
+});
+
+app.get('/check', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'check.html'));
+});
+
+// Betting and payment pages
+app.get('/pricing', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'pricing.html'));
+});
+
+app.get('/payment', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'bettingRw', 'payment', 'payment.html'));
+});
+
+app.get('/payment60', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'bettingRw', 'payment', 'payment60.html'));
+});
+
+app.get('/payment100', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'bettingRw', 'payment', 'payment100.html'));
+});
+
+app.get('/demo', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'bettingRw', 'payment', 'paid.html'));
+});
+// Signup endpoint
+app.post('/api/signup', async (req, res) => {
+  const { username, email, password } = req.body;
+
+  if (!username || !email || !password) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  try {
+    const existing = await User.findOne({ email: email.toLowerCase() });
+    if (existing) {
+      return res.status(400).json({ error: 'User already exists' });
     }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--primary-dark-blue);
-      color: white;
-      min-height: 100vh;
-      padding: 1rem;
-    }
-
-    /* Scrollbar fix for better look */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background-color: var(--primary-green);
-      border-radius: 10px;
-    }
-  </style>
-</head>
-<body class="flex flex-col items-center">
-
-  <!-- Pricing toggle -->
-  <div class="mb-8 text-center">
-    <label class="inline-flex items-center cursor-pointer mr-6">
-      <input type="radio" name="duration" value="weekly" checked class="form-radio text-green-500" />
-      <span class="ml-2 select-none">Weekly</span>
-    </label>
-    <label class="inline-flex items-center cursor-pointer">
-      <input type="radio" name="duration" value="monthly" class="form-radio text-green-500" />
-      <span class="ml-2 select-none">Monthly</span>
-    </label>
-  </div>
-
-  <!-- Pricing cards container -->
-  <ul id="pricing-list" class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-7xl w-full">
-
-    <!-- Weekly Cards -->
-    <li data-duration="weekly" class="pricing-card bg-[var(--primary-dark-blue)] border border-transparent rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-[0_8px_25px_rgba(57,255,20,0.8)] hover:border-[var(--primary-green)] hover:translate-y-[-10px]">
-      <header class="mb-4 text-center">
-        <h2 class="text-[var(--primary-green)] text-2xl font-bold">BETPAWA</h2>
-        <p class="text-white text-sm">AVIATOR</p>
-      </header>
-      <ul class="mb-6 text-[var(--primary-green)] space-y-1 text-sm">
-        <li>PREDICTION DETAIL</li>
-        <li>6 Hours Per Day In Week</li>
-        <li>Analytics</li>
-      </ul>
-      <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
-        30,000 FRW / Week
-      </div>
-      <a href='/payment' class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
-        PAY
-      </a>
-    </li>
-
-    <li data-duration="weekly" class="pricing-card bg-[var(--primary-dark-blue)] border border-transparent rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-[0_8px_25px_rgba(57,255,20,0.8)] hover:border-[var(--primary-green)] hover:translate-y-[-10px]">
-      <header class="mb-4 text-center">
-        <h2 class="text-[var(--primary-green)] text-2xl font-bold">Winner RW</h2>
-        <p class="text-white text-sm">AVIATOR</p>
-      </header>
-      <ul class="mb-6 text-[var(--primary-green)] space-y-1 text-sm">
-        <li>PREDICTOR DETAIL</li>
-        <li>4 hours per day In Month</li>
-      </ul>
-      <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
-        60,000 FRW
-      </div>
-      <a href='/payment60' class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
-        PAY
-      </a>
-    </li>
-
-    <li data-duration="weekly" class="pricing-card bg-[var(--primary-dark-blue)] border border-transparent rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-[0_8px_25px_rgba(57,255,20,0.8)] hover:border-[var(--primary-green)] hover:translate-y-[-10px]">
-      <header class="mb-4 text-center">
-        <h2 class="text-[var(--primary-green)] text-2xl font-bold">BETPAWA</h2>
-        <p class="text-white text-sm">PRO AVIATOR</p>
-      </header>
-      <ul class="mb-6 text-[var(--primary-green)] space-y-1 text-sm">
-        <li>Logo and Branding</li>
-        <li>Unlimited Prediction</li>
-        <li>15 hours per day in week</li>
-      </ul>
-      <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
-        60,000 FRW / Week
-      </div>
-      <a href='/payment60' class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
-        PAY
-      </a>
-    </li>
-
-    <li data-duration="weekly" class="pricing-card bg-[var(--primary-dark-blue)] border border-transparent rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-[0_8px_25px_rgba(57,255,20,0.8)] hover:border-[var(--primary-green)] hover:translate-y-[-10px]">
-      <header class="mb-4 text-center">
-        <h2 class="text-[var(--primary-green)] text-2xl font-bold">Winner rw</h2>
-        <p class="text-white text-sm">AVIATOR</p>
-      </header>
-      <ul class="mb-6 text-[var(--primary-green)] space-y-1 text-sm">
-        <li>PREDICTION DETAIL</li>
-        <li>6 Hours Per Day</li>
-        <li>Analytics</li>
-      </ul>
-      <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
-        30,000 FRW / Week
-      </div>
-      <a href="/payment" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
-        PAY
-      </a>
-    </li>
-
-    <!-- Monthly Cards -->
-    <li data-duration="monthly" class="pricing-card hidden bg-[var(--primary-dark-blue)] border border-transparent rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-[0_8px_25px_rgba(57,255,20,0.8)] hover:border-[var(--primary-green)] hover:translate-y-[-10px]">
-      <header class="mb-4 text-center">
-        <h2 class="text-[var(--primary-green)] text-2xl font-bold">Winner RW</h2>
-        <p class="text-white text-sm">AVIATOR</p>
-      </header>
-      <ul class="mb-6 text-[var(--primary-green)] space-y-1 text-sm">
-        <li>PREDICTION DETAIL</li>
-        <li>4 Hours Per Day</li>
-        <li>24 hours per month</li>
-      </ul>
-      <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
-        100,000 FRW / Week
-      </div>
-      <a href="/payment" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
-        PAY
-      </a>
-    </li>
-
-    <li data-duration="monthly" class="pricing-card hidden bg-[var(--primary-dark-blue)] border border-transparent rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-[0_8px_25px_rgba(57,255,20,0.8)] hover:border-[var(--primary-green)] hover:translate-y-[-10px]">
-      <header class="mb-4 text-center">
-        <h2 class="text-[var(--primary-green)] text-2xl font-bold">BETPAWA</h2>
-        <p class="text-white text-sm">AVIATOR</p>
-      </header>
-      <ul class="mb-6 text-[var(--primary-green)] space-y-1 text-sm">
-        <li>PREDICTOR DETAIL</li>
-        <li>Unlimited access week</li>
-        <li>Bonus with invitation</li>
-      </ul>
-      <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
-        400,000 FRW / Week
-      </div>
-      <a href="/payment" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
-        PAY
-      </a>
-    </li>
-
-    <li data-duration="monthly" class="pricing-card hidden bg-[var(--primary-dark-blue)] border border-transparent rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform duration-300 hover:shadow-[0_8px_25px_rgba(57,255,20,0.8)] hover:border-[var(--primary-green)] hover:translate-y-[-10px]">
-      <header class="mb-4 text-center">
-        <h2 class="text-[var(--primary-green)] text-2xl font-bold">Winner RW</h2>
-        <p class="text-white text-sm">PRO AVIATOR</p>
-      </header>
-      <ul class="mb-6 text-[var(--primary-green)] space-y-1 text-sm">
-        <li>Logo and Branding</li>
-        <li>Unlimited Prediction</li>
-        <li>Unlimited access week</li>
-      </ul>
-      <div class="plan_price text-[var(--primary-green)] font-extrabold text-2xl mb-6 text-center">
-        40,000 FRW / Week
-      </div>
-      <a href="/payment" class="select inline-block w-full bg-[var(--primary-green)] text-black font-bold text-lg rounded-lg py-3 text-center shadow-md hover:opacity-90 transition-opacity duration-300">
-        PAY
-      </a>
-    </li>
-  </ul>
-
-  <!-- JavaScript -->
-  <script>
-    const radios = document.querySelectorAll('input[name="duration"]');
-    const pricingCards = document.querySelectorAll('.pricing-card');
-
-    function updateCards(duration) {
-      pricingCards.forEach(card => {
-        card.classList.toggle('hidden', card.dataset.duration !== duration);
-      });
-    }
-
-    radios.forEach(radio => {
-      radio.addEventListener('change', () => {
-        if (radio.checked) updateCards(radio.value);
-      });
+    await User.create({
+      username,
+      email: email.toLowerCase(),
+      password,
+      isActivated: false,
+      role: 'user',
+      sessionStart: new Date(),
+      mobileNumber: ''
     });
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const checked = document.querySelector('input[name="duration"]:checked');
-      updateCards(checked ? checked.value : 'weekly');
+    res.status(201).json({ message: 'Signup successful' });
+  } catch (error) {
+    console.error('Signup error:', error);
+    res.status(500).json({ error: 'Internal server error during signup' });
+  }
+});
+
+// Login endpoint
+app.post('/api/login', async (req, res) => {
+  const email = req.body.email?.trim().toLowerCase();
+  const password = req.body.password?.trim();
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  // Hardcoded admin
+  if (email === 'admin@123.com' && password === 'admin.123') {
+    req.session.user = { email, username: 'Admin', role: 'admin', isActivated: true };
+    return res.json(req.session.user);
+  }
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    if (user.password !== password) return res.status(401).json({ error: 'Invalid credentials' });
+
+    // **Do NOT block login here if not activated**
+    // Instead, send user info with isActivated flag
+    req.session.user = {
+      email: user.email,
+      username: user.username,
+      role: user.role,
+      isActivated: user.isActivated
+    };
+
+    res.json(req.session.user);
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Internal server error during login' });
+  }
+});
+
+
+// Session check endpoint
+app.post('/api/session-check', async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'Email required' });
+
+  try {
+    let user = await User.findOne({ email: email.toLowerCase() });
+    const now = new Date();
+    const today = now.toDateString();
+
+    if (!user) {
+      user = await User.create({ email: email.toLowerCase(), sessionStart: now });
+      return res.json({ remaining: 6 * 60 * 60 * 1000 });
+    }
+
+    const sessionStart = new Date(user.sessionStart || now);
+    if (sessionStart.toDateString() !== today) {
+      user.sessionStart = now;
+      await user.save();
+      return res.json({ remaining: 6 * 60 * 60 * 1000 });
+    }
+
+    const elapsed = now - sessionStart;
+    const remaining = 6 * 60 * 60 * 1000 - elapsed;
+
+    if (remaining <= 0) {
+      return res.status(403).json({ error: 'Session expired' });
+    }
+
+    return res.json({ remaining });
+  } catch (error) {
+    console.error('Session check error:', error);
+    res.status(500).json({ error: 'Internal server error during session check' });
+  }
+});
+// Delete user
+app.delete('/api/users/:id', async (req, res) => {
+  try {
+    const deleted = await User.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).send('User not found');
+    res.send('User deleted');
+  } catch (err) {
+    res.status(500).send('Failed to delete user');
+  }
+});
+
+// Monthly Report
+app.get('/api/users/report/monthly', async (req, res) => {
+  try {
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const usersThisMonth = await User.find({
+      createdAt: { $gte: firstDay },
     });
-  </script>
-</body>
-</html>   
+
+    const count = usersThisMonth.length;
+    const income = count * 30000;
+    const goal = 500000;
+    const progress = ((income / goal) * 100).toFixed(2);
+
+    res.json({
+      month: now.toLocaleString('default', { month: 'long' }),
+      userCount: count,
+      income,
+      goal,
+      progress,
+    });
+  } catch (err) {
+    res.status(500).send('Failed to generate report');
+  }
+});
+// Logout endpoint
+app.post('/api/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      return res.status(500).json({ error: 'Logout failed' });
+    }
+    res.clearCookie('connect.sid');
+    res.json({ message: 'Logged out successfully' });
+  });
+});
+
+// Prediction endpoint
+app.get('/api/predict', (req, res) => {
+  const base = 1.0;
+  const random = parseFloat((base + Math.random() * 2).toFixed(2));
+  res.json({ prediction: `${random}X` });
+});
+
+// Get all users (Admin only)
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await User.find({}, 'username email isActivated role');
+    res.json(users);
+  } catch (error) {
+    console.error('Fetch users error:', error);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
+// Toggle user activation (Admin only)
+app.patch('/api/users/:id/toggle', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (user.role === 'admin') {
+      return res.status(403).json({ error: 'Cannot modify admin user' });
+    }
+
+    user.isActivated = !user.isActivated;
+    await user.save();
+
+    res.json({ message: 'User activation status updated', user });
+  } catch (error) {
+    console.error('Toggle user activation error:', error);
+    res.status(500).json({ error: 'Failed to update user' });
+  }
+});
+
+// --- New: Get logged-in user's mobile number ---
+app.get('/api/mobile', async (req, res) => {
+  if (!req.session.user || !req.session.user.email) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    const user = await User.findOne({ email: req.session.user.email });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    res.json({ mobileNumber: user.mobileNumber || '' });
+  } catch (error) {
+    console.error('Get mobile number error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// --- New: Update logged-in user's mobile number ---
+app.post('/api/mobile', async (req, res) => {
+  if (!req.session.user || !req.session.user.email) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { mobileNumber } = req.body;
+  if (!mobileNumber) return res.status(400).json({ error: 'Mobile number required' });
+
+  try {
+    const user = await User.findOne({ email: req.session.user.email });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    user.mobileNumber = mobileNumber;
+    await user.save();
+
+    res.json({ message: 'Mobile number updated' });
+  } catch (error) {
+    console.error('Update mobile number error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
