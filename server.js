@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
 const session = require('express-session');
+const fetch = require('node-fetch'); // For sending EmailJS REST API requests
 
 const app = express();
 const PORT = 3000;
@@ -209,6 +210,54 @@ app.patch('/api/users/:id/toggle', async (req, res) => {
   } catch (error) {
     console.error('Toggle user activation error:', error);
     res.status(500).json({ error: 'Failed to update user' });
+  }
+});
+
+// New: Activate user and send email
+app.post('/api/users/:id/activate', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (user.isActivated) return res.status(400).json({ error: 'User already activated' });
+    if (user.role === 'admin') return res.status(403).json({ error: 'Cannot activate admin user' });
+
+    // Activate user
+    user.isActivated = true;
+    await user.save();
+
+    // Send activation email via EmailJS REST API
+    const serviceId = 'service_vv5o0ng';
+    const templateId = 'template_w61fy24';
+    const userId = 'abfC9oICRtMIGM5cb';
+
+    const emailParams = {
+      user_id: userId,
+      service_id: serviceId,
+      template_id: templateId,
+      template_params: {
+        username: user.username,
+        user_email: user.email,
+        // You can add more variables here if your template requires
+      }
+    };
+
+    const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(emailParams)
+    });
+
+    if (!response.ok) {
+      console.error('Failed to send activation email:', await response.text());
+      return res.status(500).json({ error: 'Failed to send activation email' });
+    }
+
+    res.json({ message: 'User activated and email sent', user });
+  } catch (error) {
+    console.error('Activate user error:', error);
+    res.status(500).json({ error: 'Internal server error during activation' });
   }
 });
 
