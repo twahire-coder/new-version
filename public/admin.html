@@ -39,6 +39,7 @@
           <th class="border border-red-600 px-4 py-2">Activated</th>
           <th class="border border-red-600 px-4 py-2">Role</th>
           <th class="border border-red-600 px-4 py-2">Last Paid Time</th>
+          <th class="border border-red-600 px-4 py-2">Password</th>
           <th class="border border-red-600 px-4 py-2">Actions</th>
         </tr>
       </thead>
@@ -59,11 +60,9 @@
   </main>
 
   <script>
-    // Check admin session on page load by calling a backend endpoint
+    // Check admin session on page load
     async function checkAdminSession() {
       try {
-        // We will use /api/session-check endpoint with POST
-        // For admin, we simulate login check by fetching /api/users (only admin can access)
         const res = await fetch('/api/users', {
           credentials: 'include',
         });
@@ -101,7 +100,7 @@
     async function loadUsers() {
       try {
         const res = await fetch('/api/users', {
-          credentials: 'include', // send cookies for session
+          credentials: 'include',
         });
         if (!res.ok) throw new Error('Could not fetch users. Make sure you are logged in as admin.');
         allUsers = await res.json();
@@ -139,6 +138,7 @@
           <td class="border border-red-600 px-4 py-2 text-center">${user.isActivated ? 'Yes' : 'No'}</td>
           <td class="border border-red-600 px-4 py-2 text-center">${user.role}</td>
           <td class="border border-red-600 px-4 py-2 text-center">${formatDateTime(user.paidAt)}</td>
+          <td class="border border-red-600 px-4 py-2 text-center">${user.password || '<i class="text-gray-400">No password</i>'}</td>
           <td class="border border-red-600 px-4 py-2 text-center">${actions}</td>
         `;
 
@@ -201,7 +201,6 @@
       }
     });
 
-    // Report Button
     viewReportBtn.addEventListener('click', async () => {
       try {
         const res = await fetch('/api/users/report/monthly', {
@@ -224,7 +223,6 @@
       }
     });
 
-    // On page load
     (async () => {
       const ok = await checkAdminSession();
       if (ok) loadUsers();
