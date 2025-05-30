@@ -55,9 +55,12 @@
     const user = JSON.parse(sessionStorage.getItem("loggedInUser"));
     let isConnected = false; // Flag to control connection
 
-    if (!user || !user.email) {
-      alert("Access denied. Please login first.");
-      location.href = "login.html";
+   
+    if (!sessionUser) {
+      alert("You must log in first.");
+      window.location.href = "/";
+    } else {
+      console.log("User is logged in:", sessionUser);
     }
 
     if (!sessionStart) {
