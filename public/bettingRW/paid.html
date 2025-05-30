@@ -1,202 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4078728669571636"
-    crossorigin="anonymous"></script>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Really Predictor</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom right, #8B0000, #330000);
-      color: white;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .container {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(12px);
-      border-radius: 20px;
-      padding: 40px 30px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-      position: relative;
-    }
-
-    h2 {
-      color: #fff;
-      text-align: center;
-      margin-bottom: 25px;
-      font-weight: 600;
-    }
-
-    #prediction {
-      font-size: 2.8em;
-      font-weight: bold;
-      color: #0dcaf0;
-    }
-
-    .circle-icon {
-      margin: 20px auto;
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      border: 4px solid #0dcaf0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-weight: bold;
-      font-size: 1.3em;
-      color: #0dcaf0;
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .loading img {
-      display: block;
-      margin: 20px auto;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    #next-button {
-      width: 100%;
-      background-color: #8B0000;
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: bold;
-      margin-top: 20px;
-      transition: background-color 0.3s ease;
-    }
-
-    #next-button:hover {
-      background-color: #a30000;
-    }
-
-    .footer-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 100;
-    }
-
-    .footer-bar button {
-      border: none;
-      border-radius: 6px;
-      padding: 8px 16px;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-
-    .footer-bar .btn-danger {
-      background-color: #8B0000;
-      color: white;
-    }
-
-    .footer-bar .btn-success {
-      background-color: #25D366;
-      color: white;
-    }
-
-    .footer-bar .timer {
-      font-weight: bold;
-      color: white;
-    }
-
-    .logout-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background-color: transparent;
-      border: 2px solid #fff;
-      color: #fff;
-      border-radius: 6px;
-      padding: 6px 12px;
-      font-size: 0.9em;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .logout-btn:hover {
-      background-color: #fff;
-      color: #8B0000;
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 25px 20px;
-      }
-
-      .logout-btn {
-        padding: 4px 10px;
-        font-size: 0.8em;
-      }
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Demo Predictor - Aviator Style</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gradient-to-br from-red-900 via-red-800 to-red-950 min-h-screen flex flex-col items-center justify-center p-6 text-white font-sans">
 
-  <div class="container">
-    <button class="logout-btn" onclick="logout()">Logout</button>
-    <h2>Demo Aviator Predictor</h2>
-    <div id="prediction">--</div>
-    <div class="circle-icon" id="odds-display">--</div>
-    <div class="loading"><img src="loading.gif" alt="Loading..."></div>
-    <button id="next-button">Next Odd</button>
+  <div class="relative bg-black bg-opacity-40 backdrop-blur-md rounded-3xl shadow-xl max-w-md w-full p-8 text-center">
+    <button 
+      onclick="logout()" 
+      class="absolute top-4 right-4 border border-white rounded-md px-3 py-1 text-sm hover:bg-white hover:text-red-900 transition">
+      Logout
+    </button>
+    
+    <h2 class="text-3xl font-semibold mb-8">Demo Aviator Predictor</h2>
+
+    <div id="prediction" class="text-7xl font-extrabold text-cyan-400 mb-6">--</div>
+    <div id="odds-display" class="mx-auto mb-6 w-24 h-24 rounded-full border-4 border-cyan-400 flex items-center justify-center text-cyan-400 font-bold text-xl">
+      --
+    </div>
+
+    <div id="loading" class="mx-auto mb-6 w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+
+    <button id="next-button" 
+      class="w-full bg-red-900 hover:bg-red-800 rounded-lg py-3 font-semibold text-xl transition">
+      Next Odd
+    </button>
   </div>
 
-  <div class="footer-bar">
-    <button class="btn btn-danger" onclick="window.location.href='payment.html'">BACK</button>
-    <div class="timer" id="footer-timer">53:17</div>
-    <button class="btn btn-success" onclick="window.open('https://wa.me/250725414412', '_blank')">Chat</button>
-  </div>
+  <footer class="fixed bottom-0 left-0 w-full bg-black bg-opacity-60 flex justify-between items-center p-4 text-white text-sm font-semibold">
+    <button 
+      onclick="window.location.href='payment.html'" 
+      class="bg-red-900 hover:bg-red-800 rounded-md px-4 py-2">
+      BACK
+    </button>
+    <div id="footer-timer">53:17</div>
+    <button 
+      onclick="window.open('https://wa.me/250725414412', '_blank')" 
+      class="bg-green-600 hover:bg-green-500 rounded-md px-4 py-2">
+      Chat
+    </button>
+  </footer>
 
   <script>
     const predictionElement = document.getElementById('prediction');
-    const circleIcon = document.getElementById('odds-display');
-    const loadingElement = document.querySelector('.loading');
+    const oddsDisplay = document.getElementById('odds-display');
+    const loadingElement = document.getElementById('loading');
     const footerTimer = document.getElementById('footer-timer');
     const nextButton = document.getElementById('next-button');
 
-    let currentOdd = 1.00;
+    let running = false;
+    let currentMultiplier = 1.0;
+    let crashMultiplier = 1.0;
+    let animationFrameId = null;
     let timeLeft = 53 * 60 + 17;
 
-    function generatePrediction() {
-      loadingElement.style.display = 'block';
-      predictionElement.textContent = "--";
-      circleIcon.textContent = "--";
+    // Aviator-style crash multiplier generator
+    function generateCrashMultiplier() {
+      // Skewed distribution: more likely to crash early but can go high, capped at 10
+      const r = Math.random();
+      const multiplier = Math.floor(100 / (1 - r)) / 100;
+      return Math.min(multiplier, 10);
+    }
+
+    // Animate multiplier climbing until crash
+    function animateMultiplier() {
+      if (!running) return;
+
+      currentMultiplier += 0.02; // Speed of multiplier growth
+
+      if (currentMultiplier >= crashMultiplier) {
+        // Crash!
+        predictionElement.textContent = crashMultiplier.toFixed(2) + "x 💥";
+        oddsDisplay.textContent = "Crashed";
+        loadingElement.style.display = "none";
+        running = false;
+        nextButton.disabled = false;
+        nextButton.classList.remove("opacity-50", "cursor-not-allowed");
+        return;
+      }
+
+      predictionElement.textContent = currentMultiplier.toFixed(2) + "x";
+      oddsDisplay.textContent = (crashMultiplier - currentMultiplier).toFixed(2) + " to crash";
+      animationFrameId = requestAnimationFrame(animateMultiplier);
+    }
+
+    function startRound() {
+      if (running) return;
+
+      running = true;
+      currentMultiplier = 1.0;
+      predictionElement.textContent = currentMultiplier.toFixed(2) + "x";
+      oddsDisplay.textContent = "--";
+      loadingElement.style.display = "block";
+      nextButton.disabled = true;
+      nextButton.classList.add("opacity-50", "cursor-not-allowed");
 
       setTimeout(() => {
-        let prediction = (Math.random() * 10).toFixed(2);
-        currentOdd = (Math.random() * 3).toFixed(2);
-
-        predictionElement.textContent = prediction;
-        circleIcon.textContent = `${currentOdd}X`;
-
-        loadingElement.style.display = 'none';
-      }, 2000);
+        crashMultiplier = generateCrashMultiplier();
+        loadingElement.style.display = "none";
+        animateMultiplier();
+      }, 1500);
     }
 
     function updateFooterTimer() {
@@ -210,14 +116,16 @@
       window.location.href = "/";
     }
 
-    generatePrediction();
-    setInterval(generatePrediction, 5000);
-    updateFooterTimer();
-    const timerInterval = setInterval(updateFooterTimer, 1000);
-
-    nextButton.addEventListener('click', () => {
-      alert("Next odd will appear shortly...");
+    nextButton.addEventListener("click", () => {
+      if (!running) {
+        startRound();
+      }
     });
+
+    // Start the first round on page load
+    startRound();
+
+    setInterval(updateFooterTimer, 1000);
   </script>
 </body>
 </html>

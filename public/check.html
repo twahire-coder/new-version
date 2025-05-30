@@ -3,65 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Really Aviator Predictor with Google CSE Widget</title>
+  <title>Aviator Predictor</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-red-900 text-white min-h-screen p-4">
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-between p-4">
 
-  <div class="flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto min-h-[80vh]">
-    <!-- Left Panel - Predictor -->
-    <div class="bg-white bg-opacity-90 rounded-xl shadow-lg p-6 w-full lg:w-1/2 text-gray-900 flex flex-col justify-between">
-      <div>
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-bold">Aviator Predictor</h2>
-          <button id="logout-btn" class="text-sm bg-red-700 text-white px-3 py-1 rounded hover:bg-red-800">Logout</button>
-        </div>
-
-        <p class="mb-4">Prediction meets 100%</p>
-
-        <div id="prediction" class="text-4xl font-extrabold text-blue-600 mb-6 text-center">--</div>
-        <div class="loading hidden mb-4">
-          <img src="https://cdn-icons-png.flaticon.com/512/154/154834.png" alt="Loading..." class="w-12 h-12 animate-spin mx-auto" />
-        </div>
-      </div>
-
-      <div>
-        <button id="next-button" class="bg-red-900 text-white py-2 px-4 rounded w-full mb-4">
-          Next Odd & Notify
-        </button>
-        <div id="countdown" class="text-sm text-gray-700 text-center font-mono tracking-wide"></div>
-      </div>
-    </div>
-
-    <!-- Right Panel - Google CSE Widget -->
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full lg:w-1/2 flex flex-col p-4 text-black">
-      <script async src="https://cse.google.com/cse.js?cx=b559dd72dc01d4f47"></script>
-      <div class="gcse-search"></div>
-    </div>
+  <!-- Header -->
+  <div class="w-full flex justify-between items-center py-4 max-w-lg mx-auto">
+    <h1 class="text-xl font-bold">Aviator Predictor</h1>
+    <button id="logout-btn" class="bg-red-600 hover:bg-red-700 px-4 py-1 rounded">Logout</button>
   </div>
 
-  <!-- Floating user activation card -->
-  <div id="floating-user-card" class="fixed bottom-6 right-6 bg-green-700 text-white shadow-xl rounded-xl p-4 hidden z-50 transition-all duration-500 ease-in-out">
-    <div class="text-sm font-semibold">Activating user...</div>
-    <div id="active-user-name" class="text-lg font-bold mt-1"></div>
+  <!-- Connect With Buttons -->
+  <div class="flex gap-4 mb-4">
+    <button onclick="connectSite('betpawa')" class="bg-green-600 hover:bg-green-700 px-4 py-1 rounded">Connect with Betpawa.rw</button>
+    <button onclick="connectSite('winner')" class="bg-blue-600 hover:bg-blue-700 px-4 py-1 rounded">Connect with Winner.rw</button>
   </div>
+
+  <!-- Predictor Panel -->
+  <div class="bg-white text-gray-900 rounded-2xl shadow-2xl p-6 w-full max-w-lg space-y-4">
+    <p class="text-center font-medium">Crash odds rising... wait for the crash!</p>
+
+    <!-- Crash Bar Animation -->
+    <div class="relative h-16 bg-gray-200 rounded-lg overflow-hidden">
+      <div id="crash-bar" class="absolute left-0 top-0 h-full bg-gradient-to-r from-green-400 to-red-500 w-0 transition-all duration-300 ease-linear"></div>
+      <div id="crash-odds" class="absolute inset-0 flex justify-center items-center text-xl font-bold text-black">--</div>
+    </div>
+
+    <button id="next-button" class="w-full bg-red-700 hover:bg-red-800 text-white font-semibold py-2 rounded">
+      Next Prediction
+    </button>
+    <div id="countdown" class="text-sm text-center text-gray-700 font-mono tracking-wide"></div>
+  </div>
+
+  <!-- Notification Permission -->
+  <script>
+    if ("Notification" in window && Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+  </script>
 
   <script>
-    const predictionElement = document.getElementById("prediction");
+    const predictionDisplay = document.getElementById("crash-odds");
+    const crashBar = document.getElementById("crash-bar");
     const countdownElement = document.getElementById("countdown");
-    const loadingElement = document.querySelector(".loading");
     const nextButton = document.getElementById("next-button");
     const logoutBtn = document.getElementById("logout-btn");
+
+    const SESSION_DURATION_MS = 6 * 60 * 60 * 1000;
+    let sessionStart = sessionStorage.getItem("sessionStart");
     const user = JSON.parse(sessionStorage.getItem("loggedInUser"));
+    let isConnected = false; // Flag to control connection
 
     if (!user || !user.email) {
       alert("Access denied. Please login first.");
       location.href = "login.html";
     }
-
-    // Session countdown setup (6 hours)
-    const SESSION_DURATION_MS = 6 * 60 * 60 * 1000;
-    let sessionStart = sessionStorage.getItem("sessionStart");
 
     if (!sessionStart) {
       sessionStart = Date.now();
@@ -76,97 +73,103 @@
       const remaining = SESSION_DURATION_MS - elapsed;
 
       if (remaining <= 0) {
-        alert("Your session expired after 6 hours. Please login again.");
-        sessionStorage.removeItem("loggedInUser");
-        sessionStorage.removeItem("sessionStart");
+        alert("Session expired. Please login again.");
+        sessionStorage.clear();
         location.href = "login.html";
         return;
       }
 
-      const hours = Math.floor(remaining / (1000 * 60 * 60));
-      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+      const hours = Math.floor(remaining / 3600000);
+      const minutes = Math.floor((remaining % 3600000) / 60000);
+      const seconds = Math.floor((remaining % 60000) / 1000);
 
-      countdownElement.textContent = `Session time remaining: ${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')} : ${seconds.toString().padStart(2, '0')}`;
+      countdownElement.textContent = `Session left: ${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')} : ${seconds.toString().padStart(2, '0')}`;
     }
 
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    function generatePrediction() {
-      loadingElement.classList.remove("hidden");
-      setTimeout(() => {
-        const randomOdd = (Math.random() * 5 + 1).toFixed(2);
-        predictionElement.textContent = randomOdd;
-        loadingElement.classList.add("hidden");
-        showNotification(randomOdd);
-      }, 1000);
+    function animateCrashPrediction(prediction) {
+      const duration = Math.min(5000, prediction * 500);
+      const interval = 50;
+      let current = 1.0;
+      const target = parseFloat(prediction);
+      let width = 0;
+
+      predictionDisplay.textContent = "1.00X";
+      crashBar.style.width = "0%";
+
+      const step = setInterval(() => {
+        current += 0.05;
+        width += (100 / (duration / interval));
+        if (current >= target) {
+          clearInterval(step);
+          current = target;
+        }
+        predictionDisplay.textContent = current.toFixed(2) + "X";
+        crashBar.style.width = width + "%";
+      }, interval);
     }
 
-    function showNotification(prediction) {
-      if (Notification.permission === "granted") {
-        new Notification("Next Odd Prediction", {
-          body: `Next odd: ${prediction}`,
-          icon: "https://www.google.com/favicon.ico"
+    function fetchPrediction() {
+      predictionDisplay.textContent = "--";
+      crashBar.style.width = "0%";
+
+      fetch("/api/predict")
+        .then(res => res.json())
+        .then(data => {
+          const odds = parseFloat(data.prediction.replace("X", ""));
+          animateCrashPrediction(odds);
+
+          if (Notification.permission === "granted") {
+            new Notification("Next Prediction", {
+              body: `Crash at ${odds}X`,
+              icon: "https://www.google.com/favicon.ico"
+            });
+          }
         });
-      }
     }
-
-    function askNotificationPermission() {
-      if ("Notification" in window && Notification.permission !== "granted") {
-        Notification.requestPermission();
-      }
-    }
-
-    function logout() {
-      sessionStorage.removeItem("loggedInUser");
-      sessionStorage.removeItem("sessionStart");
-      location.href = "login.html";
-    }
-
-    logoutBtn.addEventListener("click", logout);
 
     nextButton.addEventListener("click", () => {
-      generatePrediction();
-      alert("Moved to the next odd...");
-    });
-
-    // Floating auto activation card logic
-    const nameArray = [
-      "Alice", "Bob", "Charlie", "Diana", "Ethan", "Fiona", "George", "Hannah", "Ian", "Jack",
-      "Karen", "Liam", "Mia", "Noah", "Olivia", "Paul", "Quinn", "Riley", "Sam", "Tina",
-      "Umar", "Violet", "William", "Xena", "Yusuf", "Zara", "Amir", "Bella", "Carlos", "Daniel",
-      "Eva", "Fatima", "Grace", "Harry", "Isla", "Jayden", "Kylie", "Leo", "Maria", "Nathan",
-      "Omar", "Penelope", "Quincy", "Rose", "Sebastian", "Tom", "Uma", "Victor", "Wendy", "Xavier"
-    ];
-
-    let currentNameIndex = 0;
-    const floatingCard = document.getElementById("floating-user-card");
-    const activeUserDisplay = document.getElementById("active-user-name");
-
-    function showNextUserCard() {
-      if (currentNameIndex >= nameArray.length) {
-        floatingCard.querySelector("div").textContent = "✅ All users activated!";
-        activeUserDisplay.textContent = "";
+      if (!isConnected) {
+        alert("Please connect with Betpawa.rw or Winner.rw first.");
         return;
       }
+      fetchPrediction();
+    });
 
-      const name = nameArray[currentNameIndex];
-      floatingCard.classList.remove("hidden");
-      activeUserDisplay.textContent = `${name} activated!`;
+    logoutBtn.addEventListener("click", () => {
+      sessionStorage.clear();
+      location.href = "login.html";
+    });
 
-      setTimeout(() => {
-        floatingCard.classList.add("hidden");
-      }, 3000);
+    function connectSite(site) {
+      let url = "";
+      let name = "";
 
-      currentNameIndex++;
+      if (site === "betpawa") {
+        url = "https://www.betpawa.rw/login";
+        name = "Betpawa.rw";
+      } else if (site === "winner") {
+        url = "https://www.winner.rw/login";
+        name = "Winner.rw";
+      }
+
+      const popup = window.open(url, "_blank");
+
+      const interval = setInterval(() => {
+        try {
+          if (popup.closed) {
+            clearInterval(interval);
+            isConnected = true;
+            alert(`✅ Successfully connected with ${name}`);
+            fetchPrediction(); // Start only after connecting
+          }
+        } catch (e) {
+          // CORS or cross-window access error: ignore silently
+        }
+      }, 1000);
     }
-
-    setInterval(showNextUserCard, 5000);
-
-    // Initialize
-    askNotificationPermission();
-    generatePrediction();
   </script>
 </body>
 </html>

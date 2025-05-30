@@ -4,7 +4,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
 const session = require('express-session');
-const fetch = require('node-fetch'); // For sending EmailJS REST API requests
+const fetch = require('node-fetch');
+const crypto = require("crypto");
 
 const app = express();
 const PORT = 3000;
@@ -14,8 +15,8 @@ mongoose.connect('mongodb+srv://shimwaolivier7:shimwa2006@aviatorapp.h2x5poa.mon
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-  .then(() => console.log('MongoDB connected successfully'))
-  .catch(err => console.error('MongoDB connection error:', err));
+.then(() => console.log('MongoDB connected successfully'))
+.catch(err => console.error('MongoDB connection error:', err));
 
 app.use(session({
   secret: 'your_secret_key',
@@ -45,7 +46,10 @@ const userSchema = new mongoose.Schema({
   sessionStart: { type: Date },
   mobileNumber: { type: String, default: '' },
   paid: { type: Boolean, default: false },
-  paidAt: { type: Date, default: null }
+  paidAt: { type: Date, default: null },
+  resetCode: String,
+  platform: { type: String, default: '' }
+   // NEW FIELD
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
@@ -92,16 +96,16 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
-// Login
 app.post('/api/login', async (req, res) => {
   const email = req.body.email?.trim().toLowerCase();
   const password = req.body.password?.trim();
 
   if (!email || !password) return res.status(400).json({ error: 'All fields are required' });
 
+  // Admin shortcut
   if (email === 'admin@123.com' && password === 'admin.123') {
     req.session.user = { email, username: 'Admin', role: 'admin', isActivated: true };
-    return res.json(req.session.user);
+    return res.json({ redirect: '/admin' });
   }
 
   try {
@@ -110,16 +114,51 @@ app.post('/api/login', async (req, res) => {
     if (user.password !== password) return res.status(401).json({ error: 'Invalid credentials' });
 
     req.session.user = {
+      id: user._id,
       email: user.email,
       username: user.username,
       role: user.role,
       isActivated: user.isActivated
     };
 
-    res.json(req.session.user);
+    // Decide redirect path
+    if (user.isActivated) {
+      return res.json({ redirect: '/check' });
+    } else if (user.platform && user.paid) {
+      return res.json({ redirect: '/payment' });
+    } else {
+      return res.json({ redirect: '/country' });
+    }
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Internal server error during login' });
+  }
+});
+
+
+// Save Payment Selection
+app.post('/api/save-payment', async (req, res) => {
+  const { platform, price } = req.body;
+  const sessionUser = req.session.user;
+
+  if (!sessionUser) {
+    return res.status(401).json({ error: 'Unauthorized. Please log in.' });
+  }
+
+  try {
+    const user = await User.findOne({ email: sessionUser.email });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    user.platform = platform;
+    user.paid = true;
+    user.paidAt = new Date();
+
+    await user.save();
+
+    res.json({ message: `Platform '${platform}' and price ${price} RWF saved successfully.` });
+  } catch (error) {
+    console.error('Save payment error:', error);
+    res.status(500).json({ error: 'Failed to save payment selection.' });
   }
 });
 
@@ -169,16 +208,33 @@ app.post('/api/logout', (req, res) => {
 });
 
 // Prediction
-app.get('/api/predict', (req, res) => {
-  const base = 1.0;
-  const random = parseFloat((base + Math.random() * 2).toFixed(2));
-  res.json({ prediction: `${random}X` });
-});
+function getCrashMultiplier(hash) {
+  const H = BigInt('0x' + hash);
+  if (H % 33n === 0n) return 1.00; // 1 in 33 chance of instant crash
+  return Number((100n * 2n ** 52n) / (2n ** 52n - H % (2n ** 52n))) / 100;
+}
 
+app.get('/api/predict', (req, res) => {
+  // Step 1: Generate secure seed
+  const seed = crypto.randomBytes(32).toString('hex');
+
+  // Step 2: Hash the seed
+  const hash = crypto.createHash('sha256').update(seed).digest('hex');
+
+  // Step 3: Calculate secure multiplier
+  const multiplier = getCrashMultiplier(hash).toFixed(2);
+
+  // Return result
+  res.json({
+    prediction: `${multiplier}X`,
+    seed,
+    hash
+  });
+});
 // Get all users (admin view)
 app.get('/api/users', async (req, res) => {
   try {
-    const users = await User.find({}, 'username email isActivated role mobileNumber paid paidAt createdAt');
+    const users = await User.find({}, 'username email isActivated role mobileNumber paid paidAt platform createdAt');
     res.json(users);
   } catch (error) {
     console.error('Fetch users error:', error);
@@ -344,6 +400,73 @@ app.post('/api/paid', async (req, res) => {
     console.error('Update paid status error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
+});
+
+
+// Replace with your actual EmailJS credentials
+const EMAILJS_SERVICE_ID = 'service_vv5o0ng';
+const EMAILJS_TEMPLATE_ID = 'template_9wbjibs';
+const EMAILJS_USER_ID = 'abfC9oICRtMIGM5cb';
+
+// Your User mongoose model
+
+
+app.post('/api/request-reset', async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'Email is required' });
+
+  const user = await User.findOne({ email });
+  if (!user) return res.status(404).json({ error: 'User not found' });
+
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  user.resetCode = code;
+  await user.save();
+
+  try {
+    const emailResponse = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        service_id: EMAILJS_SERVICE_ID,
+        template_id: EMAILJS_TEMPLATE_ID,
+        user_id: EMAILJS_USER_ID,
+        template_params: {
+          to_email: email,
+          message: `Your Aviator Predictor reset code is: ${code}`
+        }
+      }),
+      timeout: 15000
+    });
+
+    if (!emailResponse.ok) {
+      const errorText = await emailResponse.text();
+      console.error('EmailJS error:', errorText);
+      return res.status(500).json({ error: 'Failed to send reset email' });
+    }
+
+    res.json({ message: 'Verification code sent to your email.' });
+  } catch (err) {
+    console.error('Email sending error:', err);
+    res.status(500).json({ error: 'Email service error or timeout' });
+  }
+});
+
+// ✅ Verify code and reset password
+app.post('/api/verify-reset', async (req, res) => {
+  const { email, code, newPassword } = req.body;
+
+  if (!email || !code || !newPassword) {
+    return res.status(400).json({ error: 'Email, code, and new password are required' });
+  }
+
+  const user = await User.findOne({ email, resetCode: code });
+  if (!user) return res.status(400).json({ error: 'Invalid verification code' });
+
+  user.password = newPassword; // ❗ You should hash this in production
+  user.resetCode = undefined;
+  await user.save();
+
+  res.json({ message: 'Password reset successful' });
 });
 
 app.listen(PORT, () => {
