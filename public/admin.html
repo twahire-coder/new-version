@@ -40,8 +40,9 @@
           <th class="border border-red-600 px-4 py-2">Email</th>
           <th class="border border-red-600 px-4 py-2">Activated</th>
           <th class="border border-red-600 px-4 py-2">Role</th>
-          <th class="border border-red-600 px-4 py-2">Last Paid Time</th>
+          <th class="border border-red-600 px-4 py-2">mobile Number</th>
           <th class="border border-red-600 px-4 py-2">Platform</th>
+          <th class="border border-red-600 px-4 py-2">Paid</th>
           <th class="border border-red-600 px-4 py-2">Actions</th>
         </tr>
       </thead>
@@ -141,8 +142,9 @@
           <td class="border border-red-600 px-4 py-2">${user.email || '-'}</td>
           <td class="border border-red-600 px-4 py-2">${user.isActivated ? 'Yes' : 'No'}</td>
           <td class="border border-red-600 px-4 py-2">${user.role || '-'}</td>
-          <td class="border border-red-600 px-4 py-2">${formatDateTime(user.paidAt)}</td>
+          <td class="border border-red-600 px-4 py-2">${user.mobileNumber}</td>
           <td class="border border-red-600 px-4 py-2">${user.platform || '-'}</td>
+          <td class="border border-red-600 px-4 py-2">${user.paid || '-'}</td>
           <td class="border border-red-600 px-4 py-2">${actions}</td>
         `;
         usersTableBody.appendChild(tr);

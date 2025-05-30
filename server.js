@@ -235,7 +235,7 @@ app.get('/api/predict', (req, res) => {
 // Get all users (admin view)
 app.get('/api/users', async (req, res) => {
   try {
-    const users = await User.find({}, 'username email isActivated role mobileNumber paid paidAt platform createdAt');
+    const users = await User.find({}, 'username email isActivated role mobileNumber  mobileNumber platform paid createdAt');
     res.json(users);
   } catch (error) {
     console.error('Fetch users error:', error);
