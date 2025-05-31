@@ -56,24 +56,24 @@
     let isConnected = false;
 
     // ✅ Step 1: Validate user session via backend
-    fetch('/api/session-check')
-      .then(res => {
-        if (!res.ok) {
-          alert("not logged in please login")
-          window.location='/'
-        }
-        return res.json();
-      })
-      .then(user => {
-        console.log("Authenticated user:", user);
-        sessionStorage.setItem("loggedInUser", JSON.stringify(user));
-        startSessionCountdown();
-      })
-      .catch(() => {
-        alert("You must log in first.");
-        window.location.href = "/";
-      });
-
+   document.addEventListener('DOMContentLoaded', () => {
+  fetch('/api/check-auth')
+    .then(res => res.json())
+    .then(data => {
+      if (!data.loggedIn) {
+        // Not logged in: disable navigation
+        document.querySelectorAll('a, button').forEach(el => {
+          el.addEventListener('click', e => {
+            e.preventDefault();
+            alert('Please log in to continue.');
+          });
+        });
+      }
+    })
+    .catch(err => {
+      console.error('Auth check failed:', err);
+    });
+});
     // ✅ Step 2: Session countdown
     function startSessionCountdown() {
       if (!sessionStart) {

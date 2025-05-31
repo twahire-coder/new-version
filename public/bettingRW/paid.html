@@ -56,7 +56,24 @@
     let crashMultiplier = 1.0;
     let animationFrameId = null;
     let timeLeft = 53 * 60 + 17;
-
+ document.addEventListener('DOMContentLoaded', () => {
+  fetch('/api/check-auth')
+    .then(res => res.json())
+    .then(data => {
+      if (!data.loggedIn) {
+        // Not logged in: disable navigation
+        document.querySelectorAll('a, button').forEach(el => {
+          el.addEventListener('click', e => {
+            e.preventDefault();
+            alert('Please log in to continue.');
+          });
+        });
+      }
+    })
+    .catch(err => {
+      console.error('Auth check failed:', err);
+    });
+});
     // Aviator-style crash multiplier generator
     function generateCrashMultiplier() {
       // Skewed distribution: more likely to crash early but can go high, capped at 10

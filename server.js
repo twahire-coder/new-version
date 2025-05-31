@@ -59,7 +59,7 @@ function isAuthenticated(req, res, next) {
   if (req.session && req.session.user) {
     return next();
   } else {
-    return res.status(401).json({ error: 'Unauthorized access' });
+    return res.redirect('/')
   }
 }
 
@@ -477,6 +477,15 @@ app.post('/api/verify-reset', async (req, res) => {
   await user.save();
 
   res.json({ message: 'Password reset successful' });
+});
+
+
+app.get('/api/check-auth', (req, res) => {
+  if (req.session && req.session.user) {
+    res.json({ loggedIn: true });
+  } else {
+    res.json({ loggedIn: false });
+  }
 });
 
 app.listen(PORT, () => {

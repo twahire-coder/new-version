@@ -49,6 +49,24 @@
 
   <script>
     let selectedPrice = 0;
+     document.addEventListener('DOMContentLoaded', () => {
+  fetch('/api/check-auth')
+    .then(res => res.json())
+    .then(data => {
+      if (!data.loggedIn) {
+        // Not logged in: disable navigation
+        document.querySelectorAll('a, button').forEach(el => {
+          el.addEventListener('click', e => {
+            e.preventDefault();
+            alert('Please log in to continue.');
+          });
+        });
+      }
+    })
+    .catch(err => {
+      console.error('Auth check failed:', err);
+    });
+});
 
     function openPaymentOptions(price) {
       selectedPrice = price;
