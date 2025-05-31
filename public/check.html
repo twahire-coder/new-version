@@ -58,7 +58,10 @@
     // ✅ Step 1: Validate user session via backend
     fetch('/api/session-check')
       .then(res => {
-        if (!res.ok) throw new Error('Unauthorized');
+        if (!res.ok) {
+          alert("not logged in please login")
+          window.location='/'
+        }
         return res.json();
       })
       .then(user => {
