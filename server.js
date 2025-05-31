@@ -66,14 +66,14 @@ function isAuthenticated(req, res, next) {
 // HTML Routes
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
 app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'public', 'signup.html')));
-app.get('/admin',  isAuthenticate,(req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
+app.get('/admin',  isAuthenticated,(req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
 app.get('/country', (req, res) => res.sendFile(path.join(__dirname, 'public', 'country.html')));
-app.get('/check',  isAuthenticate,(req, res) => res.sendFile(path.join(__dirname, 'public', 'check.html')));
-app.get('/pricing',  isAuthenticate,(req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'pricing.html')));
-app.get('/payment', isAuthenticate, (req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'payment.html')));
-app.get('/payment60',  isAuthenticate ,(req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'payment60.html')));
-app.get('/payment100', isAuthenticate,  (req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'payment100.html')));
-app.get('/demo',  isAuthenticate ,(req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'paid.html')));
+app.get('/check',  isAuthenticated,(req, res) => res.sendFile(path.join(__dirname, 'public', 'check.html')));
+app.get('/pricing',  isAuthenticated,(req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'pricing.html')));
+app.get('/payment', isAuthenticated, (req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'payment.html')));
+app.get('/payment60',  isAuthenticated ,(req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'payment60.html')));
+app.get('/payment100', isAuthenticated,  (req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'payment100.html')));
+app.get('/demo',  isAuthenticated ,(req, res) => res.sendFile(path.join(__dirname, 'public', 'bettingRW', 'paid.html')));
 
 // Signup
 app.post('/api/signup', async (req, res) => {
@@ -224,7 +224,7 @@ function getCrashMultiplier(hash) {
   return Number((100n * 2n ** 52n) / (2n ** 52n - H % (2n ** 52n))) / 100;
 }
 
-app.get('/api/predict', isAuthenticate , (req, res) => {
+app.get('/api/predict', isAuthenticated , (req, res) => {
   // Step 1: Generate secure seed
   const seed = crypto.randomBytes(32).toString('hex');
 
@@ -280,7 +280,7 @@ app.patch('/api/users/:id/toggle', async (req, res) => {
 });
 
 // New: Activate user and send email
-app.post('/api/users/:id/activate',  isAuthenticate ,async (req, res) => {
+app.post('/api/users/:id/activate',  isAuthenticated ,async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ error: 'User not found' });
@@ -354,7 +354,7 @@ app.get('/api/users/report/monthly', async (req, res) => {
 });
 
 // Get user's mobile number
-app.get('/api/mobile',  isAuthenticate ,async (req, res) => {
+app.get('/api/mobile',  isAuthenticated ,async (req, res) => {
   if (!req.session.user || !req.session.user.email) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
