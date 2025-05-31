@@ -55,6 +55,14 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+function isAuthenticated(req, res, next) {
+  if (req.session && req.session.user) {
+    return next();
+  } else {
+    return res.status(401).json({ error: 'Unauthorized access' });
+  }
+}
+
 // HTML Routes
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
 app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'public', 'signup.html')));
@@ -135,13 +143,6 @@ app.post('/api/login', async (req, res) => {
     res.status(500).json({ error: 'Internal server error during login' });
   }
 });
-function isAuthenticated(req, res, next) {
-  if (req.session && req.session.user) {
-    return next();
-  } else {
-    return res.status(401).json({ error: 'Unauthorized access' });
-  }
-}
 
 
 
