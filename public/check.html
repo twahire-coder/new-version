@@ -53,21 +53,35 @@
 
     const SESSION_DURATION_MS = 6 * 60 * 60 * 1000;
     let sessionStart = sessionStorage.getItem("sessionStart");
-    const sessionUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
     let isConnected = false;
 
-    if (!sessionUser) {
-      alert("You must log in first.");
-      window.location.href = "/";
-    } else {
-      console.log("User is logged in:", sessionUser);
-    }
+    // ✅ Step 1: Validate user session via backend
+    fetch('/api/session-check')
+      .then(res => {
+        if (!res.ok) throw new Error('Unauthorized');
+        return res.json();
+      })
+      .then(user => {
+        console.log("Authenticated user:", user);
+        sessionStorage.setItem("loggedInUser", JSON.stringify(user));
+        startSessionCountdown();
+      })
+      .catch(() => {
+        alert("You must log in first.");
+        window.location.href = "/";
+      });
 
-    if (!sessionStart) {
-      sessionStart = Date.now();
-      sessionStorage.setItem("sessionStart", sessionStart);
-    } else {
-      sessionStart = parseInt(sessionStart, 10);
+    // ✅ Step 2: Session countdown
+    function startSessionCountdown() {
+      if (!sessionStart) {
+        sessionStart = Date.now();
+        sessionStorage.setItem("sessionStart", sessionStart);
+      } else {
+        sessionStart = parseInt(sessionStart, 10);
+      }
+
+      setInterval(updateCountdown, 1000);
+      updateCountdown();
     }
 
     function updateCountdown() {
@@ -78,7 +92,7 @@
       if (remaining <= 0) {
         alert("Session expired. Please login again.");
         sessionStorage.clear();
-        location.href = "login.html";
+        window.location.href = "login.html";
         return;
       }
 
@@ -88,9 +102,6 @@
 
       countdownElement.textContent = `Session left: ${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')} : ${seconds.toString().padStart(2, '0')}`;
     }
-
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
 
     function animateCrashPrediction(prediction) {
       const duration = Math.min(5000, prediction * 500);
@@ -119,7 +130,10 @@
       crashBar.style.width = "0%";
 
       fetch("/api/predict")
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error("Unauthorized");
+          return res.json();
+        })
         .then(data => {
           const odds = parseFloat(data.prediction.replace("X", ""));
           animateCrashPrediction(odds);
@@ -130,6 +144,11 @@
               icon: "https://www.google.com/favicon.ico"
             });
           }
+        })
+        .catch(() => {
+          alert("Your session has expired or you are not authorized.");
+          sessionStorage.clear();
+          window.location.href = "login.html";
         });
     }
 
@@ -142,8 +161,11 @@
     });
 
     logoutBtn.addEventListener("click", () => {
-      sessionStorage.clear();
-      location.href = "login.html";
+      fetch('/logout', { method: 'POST' }) // Optional backend logout
+        .finally(() => {
+          sessionStorage.clear();
+          window.location.href = "login.html";
+        });
     });
 
     function connectSite(site) {
@@ -168,10 +190,10 @@
             nextButton.disabled = false;
             nextButton.classList.remove("opacity-50", "cursor-not-allowed");
             alert(`✅ Successfully connected with ${name}`);
-            fetchPrediction(); // Optionally trigger one prediction on connect
+            fetchPrediction(); // Auto-predict on connection
           }
         } catch (e) {
-          // ignore cross-origin errors
+          // Ignore CORS error
         }
       }, 1000);
     }
